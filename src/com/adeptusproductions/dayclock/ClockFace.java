@@ -44,26 +44,19 @@ public class ClockFace extends View {
         // background
 //        canvas.drawColor(Color.DKGRAY);
 
-//        paint.setColor(Color.BLUE);
-//        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
-//        paint.setColor(Color.CYAN);
-//        canvas.drawRect(new RectF(50, 50, getWidth() - 100, getHeight() - 100), paint);
-//        canvas.drawRect(getCenteredRect(getWidth() - 100, getHeight() - 100), paint);
-
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         long circleSize = getShorterSide();
-        RectF faceRect = getCenteredSquare(circleSize);
-
-//        drawRing()
 
         drawRing(canvas, circleSize - 5, circleSize - 10, Color.DKGRAY);
 
-        drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(255, 0, 255, 0));
+        drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(210, 0, 255, 0));
 
 //        paint.setColor(Color.CYAN);
 //        canvas.drawRect(getCenteredSquare(circleSize * 0.8f), paint);
 
+        // TODO how to get segment outline?
+        paint.setStrokeWidth(1.5f);
         drawRingSegment(canvas, circleSize * 0.8f - 2, circleSize * 0.7f, Color.RED, 52.5f, 8 * 15);
 
         // set background? seems to change colour of last black circle too.
@@ -97,7 +90,10 @@ public class ClockFace extends View {
 
         paint.setTextSize(26);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        canvas.drawText(sdf.format(now.getTime()), centerX-40, centerY, paint);
+        canvas.drawText(sdf.format(now.getTime()), centerX-32, centerY, paint);
+        paint.setTextSize(18);
+        SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
+        canvas.drawText(dateSdf.format(now.getTime()), centerX-32, centerY+26, paint);
     }
 
     private Calendar getMidnight() {
