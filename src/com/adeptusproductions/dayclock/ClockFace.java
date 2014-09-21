@@ -24,6 +24,7 @@ public class ClockFace extends View {
     Paint paint = new Paint();
     int centerX;
     int centerY;
+    Calendar dayStart;
 
     public ClockFace(Context context) {
         super(context);
@@ -31,6 +32,7 @@ public class ClockFace extends View {
         setFocusableInTouchMode(true);
 
         paint.setAntiAlias(true);
+        dayStart = getMidnight();
     }
 
     @Override
@@ -44,16 +46,14 @@ public class ClockFace extends View {
         centerY = getHeight() / 2;
         int circleSize = getShorterSide();
 
-        drawRing(canvas, circleSize * 0.99f, circleSize * 0.96f, Color.DKGRAY);
+        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
 
         drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(210, 0, 255, 0));
 
-//        drawTime("9:00", "5:00", Color.argb(255, 255, 128, 0));
-        float segmentSize = 0.1f;
+        float segmentThickness = 0.1f;
 
-        drawRingSegment(canvas, circleSize * 0.8f * 0.99f, circleSize * 0.7f, Color.argb(255, 255, 128, 0), 52.5f, 8 * 15);
-
-        drawRingSegment(canvas, circleSize * 0.7f * 0.99f, circleSize * 0.6f, Color.BLUE, 15-90, 6 * 15);
+        drawPeriod(canvas, time(9, 30), time(18, 0), circleSize * 0.8f * 0.99f, circleSize * 0.7f, Color.argb(255, 255, 128, 0));
+        drawPeriod(canvas, time(1, 0), time(7, 30), circleSize * 0.7f * 0.99f, circleSize * 0.6f, Color.BLUE);
 
         // tests
 //        drawRingSegment(canvas, circleSize * 0.6f * 0.99f, circleSize * 0.5f, Color.CYAN, 30-180, 6 * 15);
@@ -63,12 +63,30 @@ public class ClockFace extends View {
 
         drawSegmentBreaks(canvas, circleSize);
 
-        // TODO configurable start/end time other than midnight
-        Calendar start = getMidnight();
         Calendar now = Calendar.getInstance();
 
-        drawTimePassedShadow(start, now, circleSize * 0.96f, canvas);
+        drawTimePassedShadow(dayStart, now, circleSize * 0.96f, canvas);
         drawTimeAndDate(now, canvas);
+    }
+
+    private void drawPeriod(Canvas canvas, Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
+        long startDiff = (start.getTimeInMillis() - dayStart.getTimeInMillis());
+        float startAngle = startDiff / (24 * 60 * 60 * 1000f) * 360;
+
+        long endDiff = (end.getTimeInMillis() - start.getTimeInMillis());
+        float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
+
+        // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
+        drawRingSegment(canvas, circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
+    }
+
+    Calendar time(int hours, int mins) {
+        Calendar m = Calendar.getInstance(); //midnight
+        m.set(Calendar.HOUR_OF_DAY, hours);
+        m.set(Calendar.MINUTE, mins);
+        m.set(Calendar.SECOND, 0);
+        m.set(Calendar.MILLISECOND, 0);
+        return m;
     }
 
     private void drawSegmentBreaks(Canvas canvas, int circleSize) {
