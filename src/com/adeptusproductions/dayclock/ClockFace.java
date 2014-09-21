@@ -5,12 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -55,24 +57,14 @@ public class ClockFace extends View {
 
 //        drawRing()
 
-        paint.setColor(Color.DKGRAY);
-        canvas.drawArc(getCenteredSquare(circleSize-5), 0, 360, true, paint);
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(circleSize-10), 0, 360, true, paint);
+        drawRing(canvas, circleSize - 5, circleSize - 10, Color.DKGRAY);
 
-        paint.setColor(Color.GREEN);
-        canvas.drawArc(getCenteredSquare(circleSize * 0.9f), 0, 360, true, paint);
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(circleSize * 0.8f), 0, 360, true, paint);
+        drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(255, 0, 255, 0));
 
 //        paint.setColor(Color.CYAN);
 //        canvas.drawRect(getCenteredSquare(circleSize * 0.8f), paint);
-        paint.setColor(Color.RED);
-//        canvas.drawCircle(centerX, centerY, circleSize * 0.8f, paint);
-        canvas.drawArc(getCenteredSquare(circleSize * 0.8f-2), 30, 10*15, true, paint);
 
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(circleSize * 0.6f), 0, 360, true, paint);
+        drawRingSegment(canvas, circleSize * 0.8f - 2, circleSize * 0.7f, Color.RED, 52.5f, 8 * 15);
 
         // set background? seems to change colour of last black circle too.
 //        canvas.drawARGB(100, 255, 255, 0);
@@ -82,19 +74,50 @@ public class ClockFace extends View {
             canvas.drawArc(getCenteredSquare(circleSize-10), a, 0.5f, true, paint);
         }
 
-        // remove time passed
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(circleSize-10), -90, 165, true, paint);
-
         // seconds hand (indicative only)
 //        paint.setColor(Color.YELLOW);
 //        paint.setStrokeWidth(1.2f);
 //        canvas.drawLine(centerX, centerY, centerX+getWidth(), centerY+getWidth(), paint);
 
+        // get time passed today
+        Calendar m = getMidnight();
+        long millisAtMidnight = m.getTimeInMillis();
+
+        Calendar now = Calendar.getInstance();
+        long millis = now.getTimeInMillis() - millisAtMidnight;
+        float doneToday = millis / (24 * 60 * 60 * 1000f);
+
+        // remove time passed
+        paint.setColor(Color.BLACK);
+        canvas.drawArc(getCenteredSquare(circleSize-10), -90, (360 * doneToday), true, paint);
+
         paint.setColor(Color.WHITE);
-        paint.setTextSize(20);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm a");
-        canvas.drawText(sdf.format(new Date()), centerX-40, centerY, paint);
+//        canvas.drawText(millis + "ms today", 5, 10, paint);
+//        canvas.drawText((doneToday * 100) + "% today", 5, 25, paint);
+
+        paint.setTextSize(26);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        canvas.drawText(sdf.format(now.getTime()), centerX-40, centerY, paint);
+    }
+
+    private Calendar getMidnight() {
+        Calendar m = Calendar.getInstance(); //midnight
+        m.set(Calendar.HOUR_OF_DAY, 0);
+        m.set(Calendar.MINUTE, 0);
+        m.set(Calendar.SECOND, 0);
+        m.set(Calendar.MILLISECOND, 0);
+        return m;
+    }
+
+    private void drawRing(Canvas canvas, float outerCircle, float innerCircle, int colour) {
+        drawRingSegment(canvas, outerCircle, innerCircle, colour, 0, 360);
+    }
+
+    private void drawRingSegment(Canvas canvas, float outerCircle, float innerCircle, int colour, float startAngle, float sweepAngle) {
+        paint.setColor(colour);
+        canvas.drawArc(getCenteredSquare(outerCircle), startAngle, sweepAngle, true, paint);
+        paint.setColor(Color.BLACK);
+        canvas.drawArc(getCenteredSquare(innerCircle), 0, 360, true, paint);
     }
 
     RectF getCenteredSquare(float size) {
