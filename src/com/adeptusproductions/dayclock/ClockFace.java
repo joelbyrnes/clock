@@ -5,15 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.text.format.Time;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +22,8 @@ public class ClockFace extends View {
     private static final String TAG = "ClockFace";
 
     Paint paint = new Paint();
+    int centerX;
+    int centerY;
 
     public ClockFace(Context context) {
         super(context);
@@ -37,63 +35,69 @@ public class ClockFace extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Log.d(TAG, "drawing circles");
-
-        Display disp = ((WindowManager)this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Log.d(TAG, "drawing clock face");
 
         // background
 //        canvas.drawColor(Color.DKGRAY);
 
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
-        long circleSize = getShorterSide();
+        centerX = getWidth() / 2;
+        centerY = getHeight() / 2;
+        int circleSize = getShorterSide();
 
-        drawRing(canvas, circleSize - 5, circleSize - 10, Color.DKGRAY);
+        drawRing(canvas, circleSize * 0.99f, circleSize * 0.96f, Color.DKGRAY);
 
         drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(210, 0, 255, 0));
 
-//        paint.setColor(Color.CYAN);
-//        canvas.drawRect(getCenteredSquare(circleSize * 0.8f), paint);
+//        drawTime("9:00", "5:00", Color.argb(255, 255, 128, 0));
+        float segmentSize = 0.1f;
 
-        drawRingSegment(canvas, circleSize * 0.8f - 2, circleSize * 0.7f, Color.argb(255, 255, 128, 0), 52.5f, 8 * 15);
+        drawRingSegment(canvas, circleSize * 0.8f * 0.99f, circleSize * 0.7f, Color.argb(255, 255, 128, 0), 52.5f, 8 * 15);
 
-        drawRingSegment(canvas, circleSize * 0.7f - 2, circleSize * 0.6f, Color.BLUE, 15-90, 6 * 15);
+        drawRingSegment(canvas, circleSize * 0.7f * 0.99f, circleSize * 0.6f, Color.BLUE, 15-90, 6 * 15);
 
-        // set background? seems to change colour of last black circle too.
-//        canvas.drawARGB(100, 255, 255, 0);
+        // tests
+//        drawRingSegment(canvas, circleSize * 0.6f * 0.99f, circleSize * 0.5f, Color.CYAN, 30-180, 6 * 15);
+//        drawRingSegment(canvas, circleSize * 0.5f * 0.99f, circleSize * 0.4f, Color.MAGENTA, 45-180, 6 * 15);
+//        drawRingSegment(canvas, circleSize * 0.4f * 0.99f, circleSize * 0.3f, Color.YELLOW, 60-180, 6 * 15);
+//        drawRingSegment(canvas, circleSize * 0.3f * 0.99f, circleSize * 0.2f, Color.LTGRAY, 75-180, 6 * 15);
 
-        // break concentric circles into 24 segments
-        for (int a = 0; a < 360; a+=360/24) {
-            canvas.drawArc(getCenteredSquare(circleSize-10), a, 0.5f, true, paint);
-        }
+        drawSegmentBreaks(canvas, circleSize);
 
-        // seconds hand (indicative only)
-//        paint.setColor(Color.YELLOW);
-//        paint.setStrokeWidth(1.2f);
-//        canvas.drawLine(centerX, centerY, centerX+getWidth(), centerY+getWidth(), paint);
-
-        // get time passed today
-        Calendar m = getMidnight();
-        long millisAtMidnight = m.getTimeInMillis();
-
+        // TODO configurable start/end time other than midnight
+        Calendar start = getMidnight();
         Calendar now = Calendar.getInstance();
+
+        drawTimePassedShadow(start, now, circleSize * 0.96f, canvas);
+        drawTimeAndDate(now, canvas);
+    }
+
+    private void drawSegmentBreaks(Canvas canvas, int circleSize) {
+        // break concentric circles into 24 segments
+        RectF faceRect = getCenteredSquare(circleSize * 0.91f);
+        for (int a = 0; a < 360; a+=360/24) {
+            canvas.drawArc(faceRect, a, 0.5f, true, paint);
+        }
+    }
+
+    private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize, Canvas canvas) {
+        // get time passed today
+        long millisAtMidnight = m.getTimeInMillis();
         long millis = now.getTimeInMillis() - millisAtMidnight;
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
         // remove time passed
         paint.setColor(Color.argb(200, 0, 0, 0));
-        canvas.drawArc(getCenteredSquare(circleSize-10), -90 + 15, (360 * doneToday) - 15, true, paint);
+        canvas.drawArc(getCenteredSquare(circleSize), -90, 360 * doneToday, true, paint);
+    }
 
+    private void drawTimeAndDate(Calendar now, Canvas canvas) {
         paint.setColor(Color.WHITE);
-//        canvas.drawText(millis + "ms today", 5, 10, paint);
-//        canvas.drawText((doneToday * 100) + "% today", 5, 25, paint);
-
         paint.setTextSize(26);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         canvas.drawText(sdf.format(now.getTime()), centerX-32, centerY, paint);
         paint.setTextSize(18);
         SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(dateSdf.format(now.getTime()), centerX-32, centerY+26, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), centerX-42, centerY+26, paint);
     }
 
     private Calendar getMidnight() {
