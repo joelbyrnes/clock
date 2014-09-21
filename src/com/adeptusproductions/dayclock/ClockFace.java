@@ -46,27 +46,35 @@ public class ClockFace extends View {
         centerY = getHeight() / 2;
         int circleSize = getShorterSide();
 
-        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
+        // green segments
+        drawRing(canvas, circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
-        drawRing(canvas, circleSize * 0.9f, circleSize * 0.8f, Color.argb(210, 0, 255, 0));
-
-        float segmentThickness = 0.1f;
-
-        drawPeriod(canvas, time(9, 30), time(18, 0), circleSize * 0.8f * 0.99f, circleSize * 0.7f, Color.argb(255, 255, 128, 0));
-        drawPeriod(canvas, time(1, 0), time(7, 30), circleSize * 0.7f * 0.99f, circleSize * 0.6f, Color.BLUE);
-
-        // tests
-//        drawRingSegment(canvas, circleSize * 0.6f * 0.99f, circleSize * 0.5f, Color.CYAN, 30-180, 6 * 15);
-//        drawRingSegment(canvas, circleSize * 0.5f * 0.99f, circleSize * 0.4f, Color.MAGENTA, 45-180, 6 * 15);
-//        drawRingSegment(canvas, circleSize * 0.4f * 0.99f, circleSize * 0.3f, Color.YELLOW, 60-180, 6 * 15);
-//        drawRingSegment(canvas, circleSize * 0.3f * 0.99f, circleSize * 0.2f, Color.LTGRAY, 75-180, 6 * 15);
+        // TODO pass in config
+        drawPeriods(canvas, circleSize * 0.94f);
 
         drawSegmentBreaks(canvas, circleSize);
 
         Calendar now = Calendar.getInstance();
 
-        drawTimePassedShadow(dayStart, now, circleSize * 0.96f, canvas);
+        drawTimePassedShadow(dayStart, now, circleSize, canvas);
+
+        // outer solid ring
+//        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
+
         drawTimeAndDate(now, canvas);
+    }
+
+    private void drawPeriods(Canvas canvas, float size) {
+        float segmentThickness = 0.1f;
+
+        drawPeriod(canvas, time(9, 30), time(18, 0), size, size * 0.9f, Color.argb(255, 255, 128, 0));
+        drawPeriod(canvas, time(1, 0), time(7, 30), size * 0.9f * 0.99f, size * 0.8f, Color.BLUE);
+
+        // tests
+//        drawPeriod(canvas, time(0, 0), time(3, 0), size * 0.798f, size * 0.7f, Color.CYAN);
+//        drawRingSegment(canvas, circleSize * 0.5f * 0.99f, circleSize * 0.4f, Color.MAGENTA, 45-180, 6 * 15);
+//        drawRingSegment(canvas, circleSize * 0.4f * 0.99f, circleSize * 0.3f, Color.YELLOW, 60-180, 6 * 15);
+//        drawRingSegment(canvas, circleSize * 0.3f * 0.99f, circleSize * 0.2f, Color.LTGRAY, 75-180, 6 * 15);
     }
 
     private void drawPeriod(Canvas canvas, Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
@@ -91,7 +99,7 @@ public class ClockFace extends View {
 
     private void drawSegmentBreaks(Canvas canvas, int circleSize) {
         // break concentric circles into 24 segments
-        RectF faceRect = getCenteredSquare(circleSize * 0.91f);
+        RectF faceRect = getCenteredSquare(circleSize);
         for (int a = 0; a < 360; a+=360/24) {
             canvas.drawArc(faceRect, a, 0.5f, true, paint);
         }
