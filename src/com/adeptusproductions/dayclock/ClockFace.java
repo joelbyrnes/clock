@@ -55,9 +55,9 @@ public class ClockFace extends View {
 //        paint.setColor(Color.CYAN);
 //        canvas.drawRect(getCenteredSquare(circleSize * 0.8f), paint);
 
-        // TODO how to get segment outline?
-        paint.setStrokeWidth(1.5f);
-        drawRingSegment(canvas, circleSize * 0.8f - 2, circleSize * 0.7f, Color.RED, 52.5f, 8 * 15);
+        drawRingSegment(canvas, circleSize * 0.8f - 2, circleSize * 0.7f, Color.argb(255, 255, 128, 0), 52.5f, 8 * 15);
+
+        drawRingSegment(canvas, circleSize * 0.7f - 2, circleSize * 0.6f, Color.BLUE, 15-90, 6 * 15);
 
         // set background? seems to change colour of last black circle too.
 //        canvas.drawARGB(100, 255, 255, 0);
@@ -81,8 +81,8 @@ public class ClockFace extends View {
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
         // remove time passed
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(circleSize-10), -90, (360 * doneToday), true, paint);
+        paint.setColor(Color.argb(200, 0, 0, 0));
+        canvas.drawArc(getCenteredSquare(circleSize-10), -90 + 15, (360 * doneToday) - 15, true, paint);
 
         paint.setColor(Color.WHITE);
 //        canvas.drawText(millis + "ms today", 5, 10, paint);
@@ -132,15 +132,5 @@ public class ClockFace extends View {
 
     int getLongerSide() {
         return Math.max(getWidth(), getHeight());
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d(TAG, "onMeasure");
-
-        int h = View.MeasureSpec.getSize(heightMeasureSpec);
-        int w = View.MeasureSpec.getSize(widthMeasureSpec);
-
-        setMeasuredDimension(w, h);
     }
 }
