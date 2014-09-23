@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,8 +50,18 @@ public class ClockFace extends View {
         // green segments
         circle.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
+        List<ActivityPeriod> activities = new ArrayList<ActivityPeriod>();
+        activities.add(new ActivityPeriod("work", time(9, 30), time(18, 0), Color.rgb(255, 128, 0)));
+        activities.add(new ActivityPeriod("sleep", time(1, 0), time(7, 30), Color.BLUE));
+
+        // tests
+//        activities.add(new ActivityPeriod("test1", time(13, 0), time(21, 0), Color.CYAN));
+//        activities.add(new ActivityPeriod("test2", time(14, 0), time(22, 0), Color.MAGENTA));
+//        activities.add(new ActivityPeriod("test3", time(15, 0), time(23, 0), Color.YELLOW));
+//        activities.add(new ActivityPeriod("test4", time(16, 0), time(24, 0), Color.LTGRAY));
+
         // TODO pass in config
-        drawPeriods(circleSize * 0.94f);
+        drawPeriods(activities, circleSize * 0.95f);
 
         circle.drawSegmentBreaks(circleSize);
 
@@ -64,17 +76,12 @@ public class ClockFace extends View {
         drawTimeAndDate(now, canvas);
     }
 
-    private void drawPeriods(float size) {
+    private void drawPeriods(List<ActivityPeriod> activities, float size) {
         float segmentThickness = 0.1f;
 
-        drawPeriod(time(9, 30), time(18, 0), size, size * 0.9f, Color.argb(255, 255, 128, 0));
-        drawPeriod(time(1, 0), time(7, 30), size * 0.9f * 0.99f, size * 0.8f, Color.BLUE);
-
-        // tests
-//        drawPeriod(canvas, time(0, 0), time(3, 0), size * 0.798f, size * 0.7f, Color.CYAN);
-//        drawRingSegment(canvas, circleSize * 0.5f * 0.99f, circleSize * 0.4f, Color.MAGENTA, 45-180, 6 * 15);
-//        drawRingSegment(canvas, circleSize * 0.4f * 0.99f, circleSize * 0.3f, Color.YELLOW, 60-180, 6 * 15);
-//        drawRingSegment(canvas, circleSize * 0.3f * 0.99f, circleSize * 0.2f, Color.LTGRAY, 75-180, 6 * 15);
+        for (ActivityPeriod activity : activities) {
+            drawPeriod(activity.start, activity.end, size * 0.99f, size *= 0.85f, activity.colour);
+        }
     }
 
     private void drawPeriod(Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
