@@ -21,17 +21,14 @@ import java.util.Calendar;
 public class ClockFace extends View {
     private static final String TAG = "ClockFace";
 
-    Paint paint = new Paint();
-    int centerX;
-    int centerY;
     Calendar dayStart;
+    SegmentedCircle circle;
 
     public ClockFace(Context context) {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        paint.setAntiAlias(true);
         dayStart = getMidnight();
     }
 
@@ -39,20 +36,20 @@ public class ClockFace extends View {
     public void onDraw(Canvas canvas) {
         Log.d(TAG, "drawing clock face");
 
+        int circleSize = getShorterSide();
+
+        circle = new SegmentedCircle(this, circleSize);
+
         // background
 //        canvas.drawColor(Color.DKGRAY);
 
-        centerX = getWidth() / 2;
-        centerY = getHeight() / 2;
-        int circleSize = getShorterSide();
-
         // green segments
-        drawRing(canvas, circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
+        circle.drawRing(canvas, circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
         // TODO pass in config
         drawPeriods(canvas, circleSize * 0.94f);
 
-        drawSegmentBreaks(canvas, circleSize);
+        circle.drawSegmentBreaks(canvas, circleSize);
 
         Calendar now = Calendar.getInstance();
 
@@ -61,6 +58,7 @@ public class ClockFace extends View {
         // outer solid ring
 //        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
 
+        // TODO generify this - drawCenteredText?
         drawTimeAndDate(now, canvas);
     }
 
@@ -85,7 +83,7 @@ public class ClockFace extends View {
         float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
 
         // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
-        drawRingSegment(canvas, circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
+        circle.drawRingSegment(canvas, circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
     }
 
     Calendar time(int hours, int mins) {
@@ -97,34 +95,26 @@ public class ClockFace extends View {
         return m;
     }
 
-    private void drawSegmentBreaks(Canvas canvas, int circleSize) {
-        // break concentric circles into 24 segments
-        RectF faceRect = getCenteredSquare(circleSize);
-        for (int a = 0; a < 360; a+=360/24) {
-            canvas.drawArc(faceRect, a, 0.5f, true, paint);
-        }
-    }
-
     private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize, Canvas canvas) {
         // get time passed today
         long millisAtMidnight = m.getTimeInMillis();
         long millis = now.getTimeInMillis() - millisAtMidnight;
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
-        // remove time passed
-        paint.setColor(Color.argb(200, 0, 0, 0));
-        canvas.drawArc(getCenteredSquare(circleSize), -90, 360 * doneToday, true, paint);
+        circle.drawShadow(canvas, circleSize, -90, 360 * doneToday);
     }
 
     private void drawTimeAndDate(Calendar now, Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         paint.setTextSize(26);
 		paint.setTextAlign(Paint.Align.CENTER);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        canvas.drawText(sdf.format(now.getTime()), centerX, centerY, paint);
+        canvas.drawText(sdf.format(now.getTime()), circle.centerX, circle.centerY, paint);
         paint.setTextSize(18);
         SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(dateSdf.format(now.getTime()), centerX, centerY+26, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), circle.centerX, circle.centerY+26, paint);
     }
 
     private Calendar getMidnight() {
@@ -134,27 +124,6 @@ public class ClockFace extends View {
         m.set(Calendar.SECOND, 0);
         m.set(Calendar.MILLISECOND, 0);
         return m;
-    }
-
-    private void drawRing(Canvas canvas, float outerCircle, float innerCircle, int colour) {
-        drawRingSegment(canvas, outerCircle, innerCircle, colour, 0, 360);
-    }
-
-    private void drawRingSegment(Canvas canvas, float outerCircle, float innerCircle, int colour, float startAngle, float sweepAngle) {
-        paint.setColor(colour);
-        canvas.drawArc(getCenteredSquare(outerCircle), startAngle, sweepAngle, true, paint);
-        paint.setColor(Color.BLACK);
-        canvas.drawArc(getCenteredSquare(innerCircle), 0, 360, true, paint);
-    }
-
-    RectF getCenteredSquare(float size) {
-        return getCenteredRect(size, size);
-    }
-
-    RectF getCenteredRect(float width, float height) {
-        float top = (getHeight() - height) / 2;
-        float left = (getWidth() - width) / 2;
-        return new RectF(left, top, left+width, top+height);
     }
 
     int getShorterSide() {
