@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
 
@@ -23,6 +22,7 @@ public class ClockFace extends View {
 
     Calendar dayStart;
     SegmentedCircle circle;
+    float scale = 1;
 
     public ClockFace(Context context) {
         super(context);
@@ -34,22 +34,24 @@ public class ClockFace extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Log.d(TAG, "drawing clock face");
+        Log.d(TAG, "drawing clock face with shorter side " + getShorterSide());
 
-        int circleSize = getShorterSide();
+        float circleSize = getShorterSide() * scale;
 
-        circle = new SegmentedCircle(this, circleSize);
+        circle = new SegmentedCircle(canvas, circleSize);
 
         // background
-//        canvas.drawColor(Color.DKGRAY);
+        canvas.drawColor(Color.DKGRAY);
+
+        circle.drawCircle(circleSize);
 
         // green segments
-        circle.drawRing(canvas, circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
+        circle.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
         // TODO pass in config
         drawPeriods(canvas, circleSize * 0.94f);
 
-        circle.drawSegmentBreaks(canvas, circleSize);
+        circle.drawSegmentBreaks(circleSize);
 
         Calendar now = Calendar.getInstance();
 
@@ -83,7 +85,7 @@ public class ClockFace extends View {
         float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
 
         // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
-        circle.drawRingSegment(canvas, circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
+        circle.drawRingSegment(circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
     }
 
     Calendar time(int hours, int mins) {
@@ -101,20 +103,21 @@ public class ClockFace extends View {
         long millis = now.getTimeInMillis() - millisAtMidnight;
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
-        circle.drawShadow(canvas, circleSize, -90, 360 * doneToday);
+        circle.drawShadow(circleSize, -90, 360 * doneToday);
     }
 
     private void drawTimeAndDate(Calendar now, Canvas canvas) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(26);
+        float timeSize = 26 * scale;
+        paint.setTextSize(timeSize);
 		paint.setTextAlign(Paint.Align.CENTER);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         canvas.drawText(sdf.format(now.getTime()), circle.centerX, circle.centerY, paint);
-        paint.setTextSize(18);
+        paint.setTextSize(18 * scale);
         SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(dateSdf.format(now.getTime()), circle.centerX, circle.centerY+26, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), circle.centerX, circle.centerY+timeSize, paint);
     }
 
     private Calendar getMidnight() {
