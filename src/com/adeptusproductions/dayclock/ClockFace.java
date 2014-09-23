@@ -49,13 +49,13 @@ public class ClockFace extends View {
         circle.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
         // TODO pass in config
-        drawPeriods(canvas, circleSize * 0.94f);
+        drawPeriods(circleSize * 0.94f);
 
         circle.drawSegmentBreaks(circleSize);
 
         Calendar now = Calendar.getInstance();
 
-        drawTimePassedShadow(dayStart, now, circleSize, canvas);
+        drawTimePassedShadow(dayStart, now, circleSize);
 
         // outer solid ring
 //        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
@@ -64,11 +64,11 @@ public class ClockFace extends View {
         drawTimeAndDate(now, canvas);
     }
 
-    private void drawPeriods(Canvas canvas, float size) {
+    private void drawPeriods(float size) {
         float segmentThickness = 0.1f;
 
-        drawPeriod(canvas, time(9, 30), time(18, 0), size, size * 0.9f, Color.argb(255, 255, 128, 0));
-        drawPeriod(canvas, time(1, 0), time(7, 30), size * 0.9f * 0.99f, size * 0.8f, Color.BLUE);
+        drawPeriod(time(9, 30), time(18, 0), size, size * 0.9f, Color.argb(255, 255, 128, 0));
+        drawPeriod(time(1, 0), time(7, 30), size * 0.9f * 0.99f, size * 0.8f, Color.BLUE);
 
         // tests
 //        drawPeriod(canvas, time(0, 0), time(3, 0), size * 0.798f, size * 0.7f, Color.CYAN);
@@ -77,7 +77,7 @@ public class ClockFace extends View {
 //        drawRingSegment(canvas, circleSize * 0.3f * 0.99f, circleSize * 0.2f, Color.LTGRAY, 75-180, 6 * 15);
     }
 
-    private void drawPeriod(Canvas canvas, Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
+    private void drawPeriod(Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
         long startDiff = (start.getTimeInMillis() - dayStart.getTimeInMillis());
         float startAngle = startDiff / (24 * 60 * 60 * 1000f) * 360;
 
@@ -97,7 +97,7 @@ public class ClockFace extends View {
         return m;
     }
 
-    private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize, Canvas canvas) {
+    private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize) {
         // get time passed today
         long millisAtMidnight = m.getTimeInMillis();
         long millis = now.getTimeInMillis() - millisAtMidnight;
