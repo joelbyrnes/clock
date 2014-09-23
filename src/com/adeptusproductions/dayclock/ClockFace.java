@@ -119,11 +119,12 @@ public class ClockFace extends View {
     private void drawTimeAndDate(Calendar now, Canvas canvas) {
         paint.setColor(Color.WHITE);
         paint.setTextSize(26);
+		paint.setTextAlign(Paint.Align.CENTER);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        canvas.drawText(sdf.format(now.getTime()), centerX-32, centerY, paint);
+        canvas.drawText(sdf.format(now.getTime()), centerX, centerY, paint);
         paint.setTextSize(18);
         SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(dateSdf.format(now.getTime()), centerX-42, centerY+26, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), centerX, centerY+26, paint);
     }
 
     private Calendar getMidnight() {
