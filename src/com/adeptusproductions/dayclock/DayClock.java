@@ -19,14 +19,14 @@ import java.util.List;
  * Time: 9:02 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ClockFace extends View {
-    private static final String TAG = "ClockFace";
+public class DayClock extends View {
+    private static final String TAG = "DayClock";
 
     Calendar dayStart;
     SegmentedCircle circle;
     float scale = 1;
 
-    public ClockFace(Context context) {
+    public DayClock(Context context) {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);

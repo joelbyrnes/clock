@@ -3,20 +3,21 @@ package com.adeptusproductions.dayclock;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class DayClockActivity extends Activity
+public class MainActivity extends Activity
 {
     private static final long MILLISECONDS_TILL_UPDATE = 1000;
-    ClockFace clockFace;
+    View view;
 
     // for refreshing every second (even once a minute would be fine)
     Handler viewHandler = new Handler();
     Runnable updateView = new Runnable(){
         @Override
         public void run(){
-            clockFace.invalidate();
+            view.invalidate();
             viewHandler.postDelayed(updateView, MILLISECONDS_TILL_UPDATE);
         }
     };
@@ -32,9 +33,9 @@ public class DayClockActivity extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        clockFace = new ClockFace(this);
-        setContentView(clockFace);
-        clockFace.requestFocus();
+        view = new DayClock(this);
+        setContentView(view);
+        view.requestFocus();
 
         viewHandler.post(updateView);
     }
