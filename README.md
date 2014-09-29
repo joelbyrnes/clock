@@ -7,10 +7,8 @@ This is my first android application, so I'm probably doing a lot of things badl
 =TO DO=
 * make it a widget
 * add other clocks (tomorrow? year?) which can be swiped to
-* make it scale properly
 * allow programming in periods via app instead of hardcoding, saved locally
 * allow segments to be tapped for more info or other actions - at the moment it's just a flat image, is this a bad way to do it?
-
 
 =Far off future to do=
 * calendar integration
