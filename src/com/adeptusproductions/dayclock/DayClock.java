@@ -42,9 +42,6 @@ public class DayClock extends View {
 
         circle = new SegmentedCircle(canvas, circleSize);
 
-        // background
-        canvas.drawColor(Color.DKGRAY);
-
         circle.drawCircle(circleSize);
 
         // green segments
@@ -60,20 +57,26 @@ public class DayClock extends View {
 //        activities.add(new ActivityPeriod("test3", time(15, 0), time(23, 0), Color.YELLOW));
 //        activities.add(new ActivityPeriod("test4", time(16, 0), time(24, 0), Color.LTGRAY));
 
-        // TODO pass in config
         drawPeriods(activities, circleSize * 0.95f);
 
-        circle.drawSegmentBreaks(circleSize);
+        drawSegmentBreaks();
 
         Calendar now = Calendar.getInstance();
 
-        drawTimePassedShadow(dayStart, now, circleSize);
+        drawTimePassedShadow(dayStart, now);
 
         // outer solid ring
 //        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
 
         // TODO generify this - drawCenteredText?
         drawTimeAndDate(now, canvas);
+    }
+
+    void drawSegmentBreaks() {
+        // break concentric circles into 24 segments
+        for (int h = 0; h < 24; h++) {
+            circle.drawSegmentBreak(h / 24f);
+        }
     }
 
     private void drawPeriods(List<ActivityPeriod> activities, float size) {
@@ -104,13 +107,13 @@ public class DayClock extends View {
         return m;
     }
 
-    private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize) {
+    private void drawTimePassedShadow(Calendar m, Calendar now) {
         // get time passed today
         long millisAtMidnight = m.getTimeInMillis();
         long millis = now.getTimeInMillis() - millisAtMidnight;
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
-        circle.drawShadow(circleSize, -90, 360 * doneToday);
+        circle.drawShadow(doneToday);
     }
 
     private void drawTimeAndDate(Calendar now, Canvas canvas) {

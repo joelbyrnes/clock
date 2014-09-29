@@ -37,6 +37,7 @@ public class MainActivity extends Activity
         setContentView(view);
         view.requestFocus();
 
+        // start update loop
         viewHandler.post(updateView);
     }
 }

@@ -59,45 +59,34 @@ public class YearClock extends View {
     }
 
     void drawSegmentBreaks(float circleSize) {
-        // break concentric circles into 24 segments
         RectF faceRect = circle.getCenteredSquare(circleSize);
         GregorianCalendar cal = date(1, 0);
+        int year = cal.get(Calendar.YEAR);
+        Log.d(TAG, "calendar says year " + year + " is " + (cal.isLeapYear(year)? "" : "not ") + "a leap year");
+        Log.d(TAG, "calendar says year " + (year + 1) + " is " + (cal.isLeapYear(year + 1)? "" : "not ") + "a leap year");
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         SimpleDateFormat sdf = new SimpleDateFormat("dd, MMM, yyyy");
         circle.canvas.drawText(sdf.format(cal.getTime()), 5, 10, paint);
 
-//        cal.get(Calendar.DAY_OF_YEAR);
-
-        float febDays = cal.isLeapYear(cal.get(Calendar.YEAR)) ? 29f : 28f;
-        int daysSoFar = 0;
-
-        int days[] = new int[12];
-        days[0] = 0; // jan 1st
-        days[1] = daysSoFar += 31; // jan 1st + 31 = feb 1st
-        days[2] = daysSoFar += febDays;
-        days[3] = daysSoFar += 31;
-        days[4] = daysSoFar += 30;
-        days[5] = daysSoFar += 31; // june 1st
-        days[6] = daysSoFar += 30;
-        days[7] = daysSoFar += 31;
-        days[8] = daysSoFar += 31; // sep 1st
-        days[9] = daysSoFar += 30;
-        days[10] = daysSoFar += 31;
-        days[11] = daysSoFar += 30; // dec 1st
-
-        int daysThisYear = days[11] + 31; // add dec days
-
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
 
+        int daysThisYear = daysInYear(cal);
         float dayAngle = 360f/daysThisYear;
 
         for (int i=0; i < 12; i++) {
-            Log.d(TAG, "drawing month marker at " + days[i] + " days, " + days[i] * dayAngle + " degrees");
-            circle.canvas.drawArc(faceRect, -90 + days[i] * dayAngle, 0.5f, true, paint); // jan 1st
+            cal.set(Calendar.MONTH, i);
+            int days = cal.get(Calendar.DAY_OF_YEAR);
+
+            Log.d(TAG, "drawing month marker at " + days + " days, " + days * dayAngle + " degrees");
+            circle.canvas.drawArc(faceRect, -90 + days * dayAngle, 0.5f, true, paint);
         }
+    }
+
+    private int daysInYear(GregorianCalendar cal) {
+        return cal.isLeapYear(cal.get(Calendar.YEAR)) ? 366 : 365;
     }
 
     private void drawPeriods(List<ActivityPeriod> activities, float size) {
@@ -122,18 +111,17 @@ public class YearClock extends View {
     // months are zero-indexed, ie jan 1st is 1, 0.
     GregorianCalendar date(int day, int month) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        // make it have the correct year, not the year since 1900
+        gregorianCalendar.set(GregorianCalendar.YEAR, gregorianCalendar.get(GregorianCalendar.YEAR));
         gregorianCalendar.set(GregorianCalendar.MONTH, month);
         gregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH, day);
         return gregorianCalendar;
     }
 
-    private void drawTimePassedShadow(Calendar m, Calendar now, float circleSize) {
-        // get time passed today
-        long millisAtMidnight = m.getTimeInMillis();
-        long millis = now.getTimeInMillis() - millisAtMidnight;
-        float doneToday = millis / (24 * 60 * 60 * 1000f);
-
-        circle.drawShadow(circleSize, -90, 360 * doneToday);
+    private void drawTimePassedShadow(GregorianCalendar now) {
+        // get days passed this year
+        float passed = (now.get(Calendar.DAY_OF_YEAR) - 1) / daysInYear(now);
+        circle.drawShadow(360 * passed);
     }
 
     private void drawDate(Calendar now, Canvas canvas) {

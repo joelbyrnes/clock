@@ -12,6 +12,8 @@ public class SegmentedCircle {
     int centerX;
     int centerY;
     float circleSize;
+    RectF faceRect;
+
     Paint paint = new Paint();
 
     public SegmentedCircle(Canvas canvas, float size) {
@@ -19,6 +21,7 @@ public class SegmentedCircle {
         centerX = canvas.getWidth() / 2;
         centerY = canvas.getHeight() / 2;
         this.circleSize = size;
+        faceRect = getCenteredSquare(circleSize);
 
         paint.setAntiAlias(true);
     }
@@ -27,18 +30,18 @@ public class SegmentedCircle {
         canvas.drawCircle(centerX, centerY, size, paint);
     }
 
-    void drawSegmentBreaks(float circleSize) {
-        // break concentric circles into 24 segments
-        RectF faceRect = getCenteredSquare(circleSize);
-        for (int a = 0; a < 360; a+=360/24) {
-            canvas.drawArc(faceRect, a, 0.5f, true, paint);
-        }
+    void drawSegmentBreak(float position) {
+        paint.setColor(Color.BLACK);
+        canvas.drawArc(faceRect, -90 + position * 360, 0.5f, true, paint);
     }
 
-    void drawShadow(float circleSize, float startAngle, float sweepAngle) {
-        // remove time passed
+    void drawShadow(float startAngle, float sweepAngle) {
         paint.setColor(Color.argb(200, 0, 0, 0));
         canvas.drawArc(getCenteredSquare(circleSize), startAngle, sweepAngle, true, paint);
+    }
+
+    void drawShadow(float proportion) {
+        drawShadow(-90, proportion * 360);
     }
 
     void drawRing(float outerCircle, float innerCircle, int colour) {
