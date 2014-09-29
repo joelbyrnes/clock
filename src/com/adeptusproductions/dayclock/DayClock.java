@@ -36,7 +36,8 @@ public class DayClock extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Log.d(TAG, "drawing clock face with shorter side " + getShorterSide());
+        Log.d(TAG, "canvas width = " + canvas.getWidth() + ", height = " + canvas.getHeight());
+        Log.d(TAG, "drawing day clock with shorter side " + getShorterSide());
 
         float circleSize = getShorterSide() * scale;
 

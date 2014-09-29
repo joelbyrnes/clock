@@ -25,10 +25,9 @@ public class YearClock extends View {
         // TODO configurable year start (eg July 1st)
         start = getYearStart();
 
-        int year = start.get(Calendar.YEAR);
-        Log.d(TAG, "calendar says year " + year + " is " + (start.isLeapYear(year) ? "" : "not ") + "a leap year");
-        Log.d(TAG, "calendar says year " + (year + 1) + " is " + (start.isLeapYear(year + 1)? "" : "not ") + "a leap year");
-
+//        int year = start.get(Calendar.YEAR);
+//        Log.d(TAG, "calendar says year " + year + " is " + (start.isLeapYear(year) ? "" : "not ") + "a leap year");
+//        Log.d(TAG, "calendar says year " + (year + 1) + " is " + (start.isLeapYear(year + 1)? "" : "not ") + "a leap year");
     }
 
     @Override
@@ -36,10 +35,9 @@ public class YearClock extends View {
 //        Log.d(TAG, "drawing year clock face with shorter side " + getShorterSide());
 
         float circleSize = getShorterSide() * scale;
+        clock = new ClockFace(canvas, circleSize);
 
 //        drawYearStartText(canvas, (getHeight() - circleSize) / 2);
-
-        clock = new ClockFace(canvas, circleSize);
 
         clock.drawCircle(circleSize);
 
@@ -64,7 +62,7 @@ public class YearClock extends View {
 
     private void drawYearStartText(Canvas canvas, float ypos) {
         GregorianCalendar cal = getYearStart();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d");
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
