@@ -15,7 +15,7 @@ public class YearClock extends View {
     private static final String TAG = "YearClock";
 
     Calendar start;
-    SegmentedCircle circle;
+    ClockFace clock;
     float scale = 1;
 
     public YearClock(Context context) {
@@ -32,15 +32,15 @@ public class YearClock extends View {
 
         float circleSize = getShorterSide() * scale;
 
-        circle = new SegmentedCircle(canvas, circleSize);
+        clock = new ClockFace(canvas, circleSize);
 
         // background
         canvas.drawColor(Color.DKGRAY);
 
-        circle.drawCircle(circleSize);
+        clock.drawCircle(circleSize);
 
         // green segments
-        circle.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
+        clock.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
 //        List<ActivityPeriod> activities = new ArrayList<ActivityPeriod>();
 //        activities.add(new ActivityPeriod("work", time(9, 30), time(18, 0), Color.rgb(255, 128, 0)));
@@ -49,7 +49,7 @@ public class YearClock extends View {
         // TODO pass in config
 //        drawPeriods(activities, circleSize * 0.95f);
 
-        drawSegmentBreaks(circleSize);
+        drawSegmentBreaks();
 
         Calendar now = Calendar.getInstance();
 
@@ -58,8 +58,7 @@ public class YearClock extends View {
         drawDate(now, canvas);
     }
 
-    void drawSegmentBreaks(float circleSize) {
-        RectF faceRect = circle.getCenteredSquare(circleSize);
+    void drawSegmentBreaks() {
         GregorianCalendar cal = date(1, 0);
         int year = cal.get(Calendar.YEAR);
         Log.d(TAG, "calendar says year " + year + " is " + (cal.isLeapYear(year)? "" : "not ") + "a leap year");
@@ -68,20 +67,20 @@ public class YearClock extends View {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         SimpleDateFormat sdf = new SimpleDateFormat("dd, MMM, yyyy");
-        circle.canvas.drawText(sdf.format(cal.getTime()), 5, 10, paint);
+        clock.canvas.drawText(sdf.format(cal.getTime()), 5, 10, paint);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
 
         int daysThisYear = daysInYear(cal);
-        float dayAngle = 360f/daysThisYear;
 
         for (int i=0; i < 12; i++) {
             cal.set(Calendar.MONTH, i);
             int days = cal.get(Calendar.DAY_OF_YEAR);
 
-            Log.d(TAG, "drawing month marker at " + days + " days, " + days * dayAngle + " degrees");
-            circle.canvas.drawArc(faceRect, -90 + days * dayAngle, 0.5f, true, paint);
+            Log.d(TAG, "drawing month marker at " + days + " days, " + days * (360f/daysThisYear) + " degrees, " + 100 * days/daysThisYear + " %");
+//            clock.canvas.drawArc(faceRect, -90 + days * dayAngle, 0.5f, true, paint);
+            clock.drawSegmentBreak(days/daysThisYear);
         }
     }
 
@@ -104,8 +103,7 @@ public class YearClock extends View {
         long endDiff = (end.getTimeInMillis() - start.getTimeInMillis());
         float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
 
-        // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
-        circle.drawRingSegment(circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
+        clock.drawRingSegment(circleOuter, circleInner, colour, startAngle, sweepAngle);
     }
 
     // months are zero-indexed, ie jan 1st is 1, 0.
@@ -121,7 +119,7 @@ public class YearClock extends View {
     private void drawTimePassedShadow(GregorianCalendar now) {
         // get days passed this year
         float passed = (now.get(Calendar.DAY_OF_YEAR) - 1) / daysInYear(now);
-        circle.drawShadow(360 * passed);
+        clock.drawShadow(360 * passed);
     }
 
     private void drawDate(Calendar now, Canvas canvas) {
@@ -132,10 +130,10 @@ public class YearClock extends View {
         paint.setTextSize(timeSize);
         paint.setTextAlign(Paint.Align.CENTER);
         SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(sdf.format(now.getTime()), circle.centerX, circle.centerY, paint);
+        canvas.drawText(sdf.format(now.getTime()), clock.centerX, clock.centerY, paint);
         paint.setTextSize(18 * scale);
         SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy");
-        canvas.drawText(dateSdf.format(now.getTime()), circle.centerX, circle.centerY+timeSize, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), clock.centerX, clock.centerY + timeSize, paint);
     }
 
     private Calendar getMidnight() {

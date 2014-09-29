@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-public class SegmentedCircle {
-    private static final String TAG = "SegmentedCircle";
+public class ClockFace {
+    private static final String TAG = "ClockFace";
 
     Canvas canvas;
     int centerX;
@@ -16,7 +16,7 @@ public class SegmentedCircle {
 
     Paint paint = new Paint();
 
-    public SegmentedCircle(Canvas canvas, float size) {
+    public ClockFace(Canvas canvas, float size) {
         this.canvas = canvas;
         centerX = canvas.getWidth() / 2;
         centerY = canvas.getHeight() / 2;
@@ -50,7 +50,8 @@ public class SegmentedCircle {
 
     void drawRingSegment(float outerCircle, float innerCircle, int colour, float startAngle, float sweepAngle) {
         paint.setColor(colour);
-        canvas.drawArc(getCenteredSquare(outerCircle), startAngle, sweepAngle, true, paint);
+        // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
+        canvas.drawArc(getCenteredSquare(outerCircle), startAngle - 90, sweepAngle, true, paint);
         paint.setColor(Color.BLACK);
         canvas.drawArc(getCenteredSquare(innerCircle), 0, 360, true, paint);
     }

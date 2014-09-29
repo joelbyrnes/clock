@@ -23,7 +23,7 @@ public class DayClock extends View {
     private static final String TAG = "DayClock";
 
     Calendar dayStart;
-    SegmentedCircle circle;
+    ClockFace clock;
     float scale = 1;
 
     public DayClock(Context context) {
@@ -40,12 +40,12 @@ public class DayClock extends View {
 
         float circleSize = getShorterSide() * scale;
 
-        circle = new SegmentedCircle(canvas, circleSize);
+        clock = new ClockFace(canvas, circleSize);
 
-        circle.drawCircle(circleSize);
+        clock.drawCircle(circleSize);
 
         // green segments
-        circle.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
+        clock.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
 
         List<ActivityPeriod> activities = new ArrayList<ActivityPeriod>();
         activities.add(new ActivityPeriod("work", time(9, 30), time(18, 0), Color.rgb(255, 128, 0)));
@@ -75,7 +75,7 @@ public class DayClock extends View {
     void drawSegmentBreaks() {
         // break concentric circles into 24 segments
         for (int h = 0; h < 24; h++) {
-            circle.drawSegmentBreak(h / 24f);
+            clock.drawSegmentBreak(h / 24f);
         }
     }
 
@@ -94,8 +94,7 @@ public class DayClock extends View {
         long endDiff = (end.getTimeInMillis() - start.getTimeInMillis());
         float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
 
-        // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
-        circle.drawRingSegment(circleOuter, circleInner, colour, startAngle - 90, sweepAngle);
+        clock.drawRingSegment(circleOuter, circleInner, colour, startAngle, sweepAngle);
     }
 
     Calendar time(int hours, int mins) {
@@ -113,7 +112,7 @@ public class DayClock extends View {
         long millis = now.getTimeInMillis() - millisAtMidnight;
         float doneToday = millis / (24 * 60 * 60 * 1000f);
 
-        circle.drawShadow(doneToday);
+        clock.drawShadow(doneToday);
     }
 
     private void drawTimeAndDate(Calendar now, Canvas canvas) {
@@ -124,10 +123,10 @@ public class DayClock extends View {
         paint.setTextSize(timeSize);
 		paint.setTextAlign(Paint.Align.CENTER);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        canvas.drawText(sdf.format(now.getTime()), circle.centerX, circle.centerY, paint);
+        canvas.drawText(sdf.format(now.getTime()), clock.centerX, clock.centerY, paint);
         paint.setTextSize(18 * scale);
         SimpleDateFormat dateSdf = new SimpleDateFormat("E, MMM d");
-        canvas.drawText(dateSdf.format(now.getTime()), circle.centerX, circle.centerY+timeSize, paint);
+        canvas.drawText(dateSdf.format(now.getTime()), clock.centerX, clock.centerY + timeSize, paint);
     }
 
     private Calendar getMidnight() {
