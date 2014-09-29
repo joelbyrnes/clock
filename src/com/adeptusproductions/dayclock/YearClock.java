@@ -35,7 +35,7 @@ public class YearClock extends View {
 //        Log.d(TAG, "drawing year clock face with shorter side " + getShorterSide());
 
         float circleSize = getShorterSide() * scale;
-        clock = new ClockFace(canvas, circleSize);
+        clock = new ClockFace(this, canvas, circleSize);
 
 //        drawYearStartText(canvas, (getHeight() - circleSize) / 2);
 

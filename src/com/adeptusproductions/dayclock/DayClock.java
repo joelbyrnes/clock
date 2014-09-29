@@ -41,7 +41,7 @@ public class DayClock extends View {
 
         float circleSize = getShorterSide() * scale;
 
-        clock = new ClockFace(canvas, circleSize);
+        clock = new ClockFace(this, canvas, circleSize);
 
         clock.drawCircle(circleSize);
 

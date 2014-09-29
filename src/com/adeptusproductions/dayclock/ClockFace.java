@@ -4,24 +4,31 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
+import android.view.View;
 
 public class ClockFace {
     private static final String TAG = "ClockFace";
 
+    View view;
     Canvas canvas;
-    int centerX;
-    int centerY;
+    float centerX;
+    float centerY;
     float circleSize;
     RectF faceRect;
 
     Paint paint = new Paint();
 
-    public ClockFace(Canvas canvas, float size) {
+    public ClockFace(View view, Canvas canvas, float size) {
+        this.view = view;
         this.canvas = canvas;
-        centerX = canvas.getWidth() / 2;
-        centerY = canvas.getHeight() / 2;
+        centerX = view.getWidth() / 2;
+        centerY = view.getHeight() / 2;
         this.circleSize = size;
         faceRect = getCenteredSquare(circleSize);
+
+        Log.d(TAG, "view   width = " + view.getWidth() + ", height = " + view.getHeight());
+        Log.d(TAG, "canvas width = " + canvas.getWidth() + ", height = " + canvas.getHeight());
 
         paint.setAntiAlias(true);
     }
@@ -61,8 +68,8 @@ public class ClockFace {
     }
 
     RectF getCenteredRect(float width, float height) {
-        float top = (canvas.getHeight() - height) / 2;
-        float left = (canvas.getWidth() - width) / 2;
+        float top = (view.getHeight() - height) / 2;
+        float left = (view.getWidth() - width) / 2;
         return new RectF(left, top, left+width, top+height);
     }
 }
