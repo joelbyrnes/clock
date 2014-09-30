@@ -27,8 +27,8 @@ public class ClockFace {
         this.circleSize = size;
         faceRect = getCenteredSquare(circleSize);
 
-        Log.d(TAG, "view   width = " + view.getWidth() + ", height = " + view.getHeight());
-        Log.d(TAG, "canvas width = " + canvas.getWidth() + ", height = " + canvas.getHeight());
+//        Log.d(TAG, "view   width = " + view.getWidth() + ", height = " + view.getHeight());
+//        Log.d(TAG, "canvas width = " + canvas.getWidth() + ", height = " + canvas.getHeight());
 
         paint.setAntiAlias(true);
     }
@@ -38,7 +38,11 @@ public class ClockFace {
     }
 
     void drawSegmentBreak(float position) {
-        paint.setColor(Color.BLACK);
+        drawSpoke(position, Color.BLACK);
+    }
+
+    void drawSpoke(float position, int color) {
+        paint.setColor(color);
         canvas.drawArc(faceRect, -90 + position * 360, 0.5f, true, paint);
     }
 
@@ -55,10 +59,10 @@ public class ClockFace {
         drawRingSegment(outerCircle, innerCircle, colour, 0, 360);
     }
 
-    void drawRingSegment(float outerCircle, float innerCircle, int colour, float startAngle, float sweepAngle) {
+    void drawRingSegment(float outerCircle, float innerCircle, int colour, float startPosition, float proportion) {
         paint.setColor(colour);
         // take 90 because circle starts at 3 o'clock position and we want it to start at 0/12
-        canvas.drawArc(getCenteredSquare(outerCircle), startAngle - 90, sweepAngle, true, paint);
+        canvas.drawArc(getCenteredSquare(outerCircle), -90 + startPosition * 360, proportion * 360, true, paint);
         paint.setColor(Color.BLACK);
         canvas.drawArc(getCenteredSquare(innerCircle), 0, 360, true, paint);
     }

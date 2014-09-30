@@ -34,6 +34,7 @@ public class MainActivity extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         view = new DayClock(this);
+//        view = new YearClock(this);
         setContentView(view);
         view.requestFocus();
 

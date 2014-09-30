@@ -43,15 +43,19 @@ public class YearClock extends View {
 
         // green segments
         clock.drawRing(circleSize * 0.99f, circleSize * 0.95f, Color.argb(210, 0, 255, 0));
+//        clock.drawRing(circleSize * 0.95f, circleSize * 0.90f, Color.BLUE);
 
-//        List<ActivityPeriod> activities = new ArrayList<ActivityPeriod>();
-//        activities.add(new ActivityPeriod("holiday", date(27, 10), date(7, 11), Color.rgb(255, 128, 0)));
+        List<ActivityPeriod> activities = new ArrayList<ActivityPeriod>();
+        activities.add(new ActivityPeriod("holiday", date(27, 9), date(7, 10), Color.rgb(255, 128, 0)));
 //        activities.add(new ActivityPeriod("sleep", time(1, 0), time(7, 30), Color.BLUE));
 
-        // TODO pass in config
-//        drawPeriods(activities, circleSize * 0.95f);
+        drawPeriods(activities, circleSize * 0.95f);
+//        clock.drawRingSegment(0.90f, 0.80f, Color.RED, 0.2f, 0.6f);
 
         drawSegmentBreaks();
+
+        // event
+        drawEvent(date(25, 11), 14, 0.9f, 0.6f, Color.YELLOW);
 
         GregorianCalendar now = new GregorianCalendar();
 
@@ -97,14 +101,28 @@ public class YearClock extends View {
         }
     }
 
-    private void drawPeriod(Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
-        long startDiff = (start.getTimeInMillis() - this.start.getTimeInMillis());
-        float startAngle = startDiff / (24 * 60 * 60 * 1000f) * 360;
+    private void drawPeriod(GregorianCalendar startDate, GregorianCalendar end, float circleOuter, float circleInner, int colour) {
+        float startDay = new Float(startDate.get(GregorianCalendar.DAY_OF_YEAR));
+        float startPosition = startDay / (daysInYear(startDate));
 
-        long endDiff = (end.getTimeInMillis() - start.getTimeInMillis());
-        float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
+        float endDiff = new Float((end.get(GregorianCalendar.DAY_OF_YEAR) - startDay));
+        float proportion = endDiff / (daysInYear(startDate));
 
-        clock.drawRingSegment(circleOuter, circleInner, colour, startAngle, sweepAngle);
+        Log.d(TAG, "drawing period at day " + startDay + ", " + startPosition + ", length " + proportion);
+
+        clock.drawRingSegment(circleOuter, circleInner, colour, startPosition, proportion);
+    }
+
+    private void drawEvent(GregorianCalendar event, int leadup, float circleOuter, float circleInner, int colour) {
+        float startDay = new Float(event.get(GregorianCalendar.DAY_OF_YEAR));
+        float startPosition = startDay / daysInYear(event);
+//        float proportion = 3f / daysInYear(event);
+        float proportion = 1f;
+
+        Log.d(TAG, "drawing event at day " + startDay + ", " + startPosition + ", length " + proportion);
+
+        clock.drawRingSegment(circleOuter, circleInner, colour, startPosition, proportion);
+//        clock.drawSpoke(startPosition, colour);
     }
 
     // months are zero-indexed, ie jan 1st is 1, 0.

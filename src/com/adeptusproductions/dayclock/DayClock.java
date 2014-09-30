@@ -10,6 +10,7 @@ import android.view.View;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -22,8 +23,9 @@ import java.util.List;
 public class DayClock extends View {
     private static final String TAG = "DayClock";
 
-    Calendar dayStart;
+    GregorianCalendar dayStart;
     ClockFace clock;
+    float circleSize;
     float scale = 1;
 
     public DayClock(Context context) {
@@ -31,15 +33,12 @@ public class DayClock extends View {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        dayStart = getMidnight();
+        dayStart = time(0,0);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         Log.d(TAG, "canvas width = " + canvas.getWidth() + ", height = " + canvas.getHeight());
-        Log.d(TAG, "drawing day clock with shorter side " + getShorterSide());
-
-        float circleSize = getShorterSide() * scale;
 
         clock = new ClockFace(this, canvas, circleSize);
 
@@ -66,9 +65,6 @@ public class DayClock extends View {
 
         drawTimePassedShadow(dayStart, now);
 
-        // outer solid ring
-//        drawRing(canvas, circleSize * 0.99f, circleSize * 0.97f, Color.DKGRAY);
-
         // TODO generify this - drawCenteredText?
         drawTimeAndDate(now, canvas);
     }
@@ -90,16 +86,16 @@ public class DayClock extends View {
 
     private void drawPeriod(Calendar start, Calendar end, float circleOuter, float circleInner, int colour) {
         long startDiff = (start.getTimeInMillis() - dayStart.getTimeInMillis());
-        float startAngle = startDiff / (24 * 60 * 60 * 1000f) * 360;
+        float startPosition = startDiff / (24 * 60 * 60 * 1000f);
 
         long endDiff = (end.getTimeInMillis() - start.getTimeInMillis());
-        float sweepAngle = endDiff / (24 * 60 * 60 * 1000f) * 360;
+        float proportion = endDiff / (24 * 60 * 60 * 1000f);
 
-        clock.drawRingSegment(circleOuter, circleInner, colour, startAngle, sweepAngle);
+        clock.drawRingSegment(circleOuter, circleInner, colour, startPosition, proportion);
     }
 
-    Calendar time(int hours, int mins) {
-        Calendar m = Calendar.getInstance(); //midnight
+    GregorianCalendar time(int hours, int mins) {
+        GregorianCalendar m = new GregorianCalendar(); //midnight
         m.set(Calendar.HOUR_OF_DAY, hours);
         m.set(Calendar.MINUTE, mins);
         m.set(Calendar.SECOND, 0);
@@ -130,13 +126,8 @@ public class DayClock extends View {
         canvas.drawText(dateSdf.format(now.getTime()), clock.centerX, clock.centerY + timeSize, paint);
     }
 
-    private Calendar getMidnight() {
-        Calendar m = Calendar.getInstance(); //midnight
-        m.set(Calendar.HOUR_OF_DAY, 0);
-        m.set(Calendar.MINUTE, 0);
-        m.set(Calendar.SECOND, 0);
-        m.set(Calendar.MILLISECOND, 0);
-        return m;
+    private GregorianCalendar getMidnight() {
+        return time(0,0);
     }
 
     int getShorterSide() {
@@ -145,5 +136,15 @@ public class DayClock extends View {
 
     int getLongerSide() {
         return Math.max(getWidth(), getHeight());
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        Log.d(TAG, "view width = " + w + ", height = " + h);
+        Log.d(TAG, "drawing day clock with shorter side " + Math.min(w, h));
+
+        circleSize = Math.min(w, h) * scale;
     }
 }

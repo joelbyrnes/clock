@@ -1,6 +1,6 @@
 package com.adeptusproductions.dayclock;
 
-import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,11 +11,11 @@ import java.util.Calendar;
  */
 public class ActivityPeriod {
     String name;
-    Calendar start;
-    Calendar end;
+    GregorianCalendar start;
+    GregorianCalendar end;
     int colour;
 
-    public ActivityPeriod(String name, Calendar start, Calendar end, int colour) {
+    public ActivityPeriod(String name, GregorianCalendar start, GregorianCalendar end, int colour) {
         this.name = name;
         this.start = start;
         this.end = end;
