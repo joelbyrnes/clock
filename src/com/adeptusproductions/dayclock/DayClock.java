@@ -51,6 +51,8 @@ public class DayClock extends View {
         activities.add(new ActivityPeriod("work", time(9, 30), time(18, 0), Color.rgb(255, 128, 0)));
         activities.add(new ActivityPeriod("sleep", time(1, 0), time(7, 30), Color.BLUE));
 
+        drawMoment(time(23, 0), circleSize * 0.95f, circleSize * 0.85f, Color.YELLOW);
+
         // tests
 //        activities.add(new ActivityPeriod("test1", time(13, 0), time(21, 0), Color.CYAN));
 //        activities.add(new ActivityPeriod("test2", time(14, 0), time(22, 0), Color.MAGENTA));
@@ -92,6 +94,18 @@ public class DayClock extends View {
         float proportion = endDiff / (24 * 60 * 60 * 1000f);
 
         clock.drawRingSegment(circleOuter, circleInner, colour, startPosition, proportion);
+    }
+
+    private void drawMoment(Calendar moment, float circleOuter, float circleInner, int colour) {
+        long startDiff = (moment.getTimeInMillis() - dayStart.getTimeInMillis());
+        float startPosition = startDiff / (24 * 60 * 60 * 1000f);
+
+        // 5 mins
+        float proportion = 5f / (24 * 60);
+//        Log.d(TAG, "drawing moment at time " + moment + ", " + startPosition + ", length " + proportion);
+
+        clock.drawRingSegment(circleOuter, circleInner, colour, startPosition, proportion);
+//        clock.drawSpoke(startPosition, colour);
     }
 
     GregorianCalendar time(int hours, int mins) {
