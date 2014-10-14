@@ -55,7 +55,7 @@ public class YearClock extends View {
         drawSegmentBreaks();
 
         // event
-        drawEvent(date(25, 11), 14, 0.9f, 0.6f, Color.YELLOW);
+        drawEvent(date(25, 10), 14, 0.9f, 0.6f, Color.YELLOW);
 
         GregorianCalendar now = new GregorianCalendar();
 
@@ -117,7 +117,7 @@ public class YearClock extends View {
         float startDay = new Float(event.get(GregorianCalendar.DAY_OF_YEAR));
         float startPosition = startDay / daysInYear(event);
 //        float proportion = 3f / daysInYear(event);
-        float proportion = 1f;
+        float proportion = 0.05f;
 
         Log.d(TAG, "drawing event at day " + startDay + ", " + startPosition + ", length " + proportion);
 
