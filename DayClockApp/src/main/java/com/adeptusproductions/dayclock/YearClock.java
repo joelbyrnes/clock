@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class YearClock extends View {
     private static final String TAG = "YearClock";
