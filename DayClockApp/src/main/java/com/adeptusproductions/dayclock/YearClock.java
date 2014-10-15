@@ -8,6 +8,10 @@ import android.util.Log;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class YearClock extends View {
     private static final String TAG = "YearClock";
