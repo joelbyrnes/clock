@@ -3,24 +3,13 @@
     <title>DayClock</title>
     <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
     <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
     <style>
         body {
             background: #000000;
         }
     </style>
     <script>
-
-        function strokeArc(stage, colour, style, x, y, radius, startRads, endRads) {
-            var arc = new createjs.Shape();
-            stage.addChild(arc);
-
-            arc.graphics
-            .beginStroke(colour)
-            .setStrokeStyle(style)
-            .arc(x, y, radius, startRads, endRads)
-            .setStrokeStyle(0)
-            .closePath();
-        }
 
       function init() {
         var stage = new createjs.Stage("demoCanvas");
@@ -51,12 +40,12 @@
             .setStrokeStyle(0)
             .closePath();
 
-        strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI);
+        strokeArc("blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI);
 
-        strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI);
-        strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI);
+        strokeArc("green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI);
+        strokeArc("green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI);
 
-        strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI);
+        strokeArc("purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI);
 
 
 //        arc.graphics.moveTo(xCenter+20, yCenter).arc(xCenter, yCenter, 50, 0 * Math.PI, 1.8 * Math.PI, false).lineTo(xCenter+20, yCenter-5).closePath();

@@ -27,11 +27,11 @@
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
 
-            var red = strokeArc(stage, "red", 10, xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI);
-            strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI);
-            strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI);
-            strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI);
-            strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI);
+            var red = strokeArc("red", 10, xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI);
+            container.addChild(strokeArc("blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI));
+            container.addChild(strokeArc("green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI));
+            container.addChild(strokeArc("green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI));
+            container.addChild(strokeArc("purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI));
 
             container.addChild(red);
 

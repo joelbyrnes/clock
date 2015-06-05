@@ -1,5 +1,5 @@
 
-function strokeArc(stage, colour, style, x, y, radius, startRads, endRads, rotateRate) {
+function strokeArc(colour, style, x, y, radius, startRads, endRads, rotateRate) {
     var arc = new createjs.Shape();
 
     arc.graphics
@@ -14,7 +14,6 @@ function strokeArc(stage, colour, style, x, y, radius, startRads, endRads, rotat
     arc.y = y;
     arc.rotateRate = rotateRate;
 
-    //stage.addChild(arc);
     return arc;
 }
 

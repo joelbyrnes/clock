@@ -27,8 +27,8 @@
             container.y = yCenter;
 		    stage.addChild(container);
 
-            container.addChild(strokeArc(stage, "red", 10, xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI, 1));
-            container.addChild(strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI, -2));
+            container.addChild(strokeArc("red", 10, xCenter, yCenter, 60, 0 * Math.PI, 1.5 * Math.PI, 1));
+            container.addChild(strokeArc("blue", 20, xCenter, yCenter, 45, 0.5 * Math.PI, 2 * Math.PI, -2));
 
             var greenContainer = new createjs.Container();
             greenContainer.regX = xCenter;
@@ -38,10 +38,10 @@
             greenContainer.rotateRate = -9;
 		    container.addChild(greenContainer);
 
-            greenContainer.addChild(strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI));
-            greenContainer.addChild(strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI));
+            greenContainer.addChild(strokeArc("green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI));
+            greenContainer.addChild(strokeArc("green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI));
 
-            container.addChild(strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI, 5));
+            container.addChild(strokeArc("purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI, 5));
 
             createjs.Ticker.addEventListener("tick", tick); // update if there's movement
         }
