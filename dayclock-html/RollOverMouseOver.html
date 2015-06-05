@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EaselJS Example: rollover and mouseover</title>
+
+    <script src="static/createjs-2015.05.21.min.js"></script>
+
+    <script id="editable">
+	var stage, text;
+	var container, red, blue;
+
+	function init() {
+		// create a stage object to work with the canvas. This is the top level node in the display list:
+		stage = new createjs.Stage("testCanvas");
+		stage.name = "stage";
+		stage.enableMouseOver(20);
+
+		// Create a simple hierarchy:
+		container = stage.addChild(new createjs.Container()).set({name: "container"});
+
+		blue = container.addChild(new createjs.Shape()).set({name: "blue", x: 50, y: 100});
+		blue.graphics.beginFill("#00F").drawRect(0, 0, 200, 200);
+		red = container.addChild(new createjs.Shape()).set({name: "red", x: 100, y: 150});
+		red.graphics.beginFill("#F00").drawRect(0, 0, 100, 100);
+
+		container.addEventListener("mouseover", handleEvt);
+		container.addEventListener("mouseout", handleEvt);
+		//container.addEventListener("rollover", handleEvt);
+		//container.addEventListener("rollout", handleEvt);
+
+		//container.cursor = "pointer";
+		//red.cursor = "";
+
+		// text object to output the
+		text = stage.addChild(new createjs.Text("", "14px monospace", "#111")).set({x: 280, y: 100, lineHeight: 20});
+
+		// call update on the stage to make it render the current display list to the canvas:
+		createjs.Ticker.addEventListener("tick", stage);
+	}
+
+	var log = [];
+	function handleEvt(evt) {
+		log.push("type=" + evt.type + " target=" + evt.target.name + " currentTarget=" + evt.currentTarget.name);
+		while (log.length > 10) {
+			log.shift();
+		}
+		text.text = log.join("\n");
+
+		if (evt.type=='mouseover') {
+		    if (evt.target.name == 'red') {
+		        container.removeChild(red);
+		        red = container.addChild(new createjs.Shape()).set({name: "red", x: 100, y: 150});
+                red.graphics.beginFill("#0F0").drawRect(0, 0, 100, 100);
+		    }
+		}
+
+		if (evt.type=='mouseout') {
+		    if (evt.target.name == 'red') {
+		        red = container.getChildByName("red");
+		        red.graphics.clear();
+		        //container.removeChild(red);
+		        //red = container.addChild(new createjs.Shape()).set({name: "red", x: 100, y: 150});
+                red.graphics.beginFill("#F00").drawRect(0, 0, 100, 100);
+		    }
+		}
+
+		//evt.target.graphics.beginFill("red");
+
+		console.log('updating');
+		stage.update();
+	}
+</script>
+</head>
+
+<body onload="init();">
+
+<header class="EaselJS">
+    <h1>rollover and mouseover</h1>
+
+    <p>This example demonstrates the difference between <code>rollover</code> /
+        <code>rollout</code> and <code>mouseover</code> / <code>mouseout</code>
+        events. The red and blue squares
+        are separate Shape instances within a parent Container. The Container
+        has both rollover/rollout and
+        mouseover/mouseout events.</p>
+
+    <p>
+        Note how the mouseover/mouseout events are triggered whenever you move
+        between different display objects
+        (ex. moving from the blue to red shape), but the rollover/rollout events
+        are only triggered when you leave the
+        Container's aggregate contents.
+    </p>
+</header>
+
+<div>
+    <canvas id="testCanvas" width="960" height="400"></canvas>
+</div>
+</body>
+</html>

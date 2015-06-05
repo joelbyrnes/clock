@@ -1,0 +1,80 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <style>
+        body {
+            background: #000000;
+        }
+    </style>
+    <script>
+
+        function strokeArc(stage, colour, style, x, y, radius, startRads, endRads) {
+            var arc = new createjs.Shape();
+            stage.addChild(arc);
+
+            arc.graphics
+            .beginStroke(colour)
+            .setStrokeStyle(style)
+            .arc(x, y, radius, startRads, endRads)
+            .setStrokeStyle(0)
+            .closePath();
+        }
+
+      function init() {
+        var stage = new createjs.Stage("demoCanvas");
+
+        var xCenter = 200;
+        var yCenter = 200;
+
+        var rect = new createjs.Shape();
+        rect.graphics.beginFill("blue").beginStroke("red").rect(10, 10, 110, 110);
+        //stage.addChild(rect);
+
+        var arc = new createjs.Shape();
+        stage.addChild(arc);
+
+        //arc.graphics.beginFill("blue");
+
+        //arc.graphics.arc(xCenter, yCenter, 50, 0.2 * Math.PI, 1.8 * Math.PI, false).lineTo(xCenter, yCenter).closePath();
+        //arc.graphics.arc(xCenter, yCenter, 20, 0.2 * Math.PI, 2.2 * Math.PI, true).lineTo(xCenter, yCenter).closePath();
+        //arc.graphics.arc(xCenter, yCenter, 20, 2.2 * Math.PI, 0.2 * Math.PI, true).lineTo(xCenter, yCenter).closePath();
+        //arc.graphics.arc(xCenter, yCenter, 50, 0.2 * Math.PI, 1.8 * Math.PI, true).lineTo(xCenter, yCenter).closePath();
+
+        arc.graphics
+            //.beginFill("blue")
+            .beginStroke("red")
+            //.moveTo(xCenter, yCenter)
+            .setStrokeStyle(10)
+            .arc(xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI, false)
+            .setStrokeStyle(0)
+            .closePath();
+
+        strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI);
+
+        strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI);
+        strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI);
+
+        strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI);
+
+
+//        arc.graphics.moveTo(xCenter+20, yCenter).arc(xCenter, yCenter, 50, 0 * Math.PI, 1.8 * Math.PI, false).lineTo(xCenter+20, yCenter-5).closePath();
+        //arc.graphics.arc(xCenter, yCenter, 20, 0 * Math.PI, 2 * Math.PI, true).closePath();
+        //arc.graphics.arc(xCenter, yCenter, 20, 0 * Math.PI, 2.2 * Math.PI, true).lineTo(xCenter, yCenter).closePath();
+
+
+        var circle = new createjs.Shape();
+        circle.graphics.setStrokeStyle(1).beginStroke("#000000").beginFill("green").drawCircle(50,50,60);
+        //stage.addChild(circle);
+
+        stage.update();
+//        createjs.Ticker.addEventListener("tick", stage); // update if there's movement
+
+      }
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="500" height="500"></canvas>
+</body>
+</html>

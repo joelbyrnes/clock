@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+            //background: #000000;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var update = true;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            // container needed for events?
+            var container = new createjs.Container();
+		    stage.addChild(container);
+
+            //console.log(canvas.width);
+            //console.log(canvas.height);
+
+            var xCenter = canvas.width / 2;
+            var yCenter = canvas.height / 2;
+
+            var red = strokeArc(stage, "red", 10, xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI);
+            strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI);
+            strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI);
+            strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI);
+            strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI);
+
+            container.addChild(red);
+
+            red.addEventListener("mouseover", function (evt) {
+                console.log("mouseover");
+                var o = evt.target;
+                o.scaleX = o.scaleY = o.scale * 1.2;
+                update = true;
+            });
+
+            //stage.update();
+            createjs.Ticker.addEventListener("tick", tick); // update if there's movement
+
+        }
+
+        function tick(event) {
+            //console.log("tick");
+
+            // this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+            if (update) {
+                console.log("updating");
+                update = false; // only update once
+                stage.update(event);
+            }
+        }
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>

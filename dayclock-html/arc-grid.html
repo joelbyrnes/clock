@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+          background: #000000;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var face;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            var xCenter = canvas.width / 2;
+            var yCenter = canvas.height / 2;
+            var maxRadius = 100;
+            var gap = 3;
+            var width = 10;
+
+            face = new createjs.Container();
+		    stage.addChild(face);
+
+		    var rows = [
+		        [{name: "A", 'start': 0.1, "end": 0.4, color: "red"}],
+		        [],
+		        []
+		    ];
+
+            var radius = maxRadius;
+
+            console.log(rows);
+            console.log(rows[0]);
+
+            console.log(rows[0]["name"]);
+
+            console.log(rows[0].start);
+
+            for (var i=0; i < rows.length; i++) {
+                var row = rows[i];
+                var arc = strokeArc(stage, "red", width, xCenter, yCenter, radius, 0.1 * 2 * Math.PI, 0.5 * 2 * Math.PI);
+                //arc.name = row.name;
+                console.log("adding segment");
+                face.addChild(arc);
+
+                radius = maxRadius - width - gap;
+            }
+
+            var radius = maxRadius;
+            var start = 0.05;
+            var end = 0.35;
+            //face.addChild(strokeArc(stage, "red", width, xCenter, yCenter, radius, start * 2 * Math.PI, end * 2 * Math.PI));
+
+            radius = maxRadius - width - gap;
+            face.addChild(strokeArc(stage, "blue", width, xCenter, yCenter, radius, 0.76 * 2 * Math.PI, 1.1 * 2 * Math.PI));
+
+
+            face.addChild(strokeArc(stage, "green", width, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI));
+            face.addChild(strokeArc(stage, "green", width, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI));
+
+            console.log("stage writing");
+            stage.update();
+
+        }
+
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>

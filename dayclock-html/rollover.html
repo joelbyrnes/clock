@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+            //background: #000000;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var update = true;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            // container needed for events?
+            var container = stage.addChild(new createjs.Container()).set({name: "container"});
+
+            var rect = new createjs.Shape();
+            rect.graphics.beginFill("blue").beginStroke("red").rect(10, 10, 110, 110);
+            //stage.addChild(rect);
+
+            rect.addEventListener("mouseover", function (evt) {
+                console.log("click");
+                //var o = evt.target;
+                //o.scaleX = o.scaleY = o.scale * 1.2;
+                //update = true;
+
+                stage.removeChild(rect);
+
+                rect.graphics.beginFill("red").beginStroke("blue").rect(10, 10, 110, 110);
+                 stage.update();
+
+            });
+
+            container.addChild(rect);
+            container.cursor = "pointer";
+
+            container.addEventListener("mouseover", function (evt) {
+                console.log("mouseover");
+                var o = evt.target;
+                o.scaleX = o.scaleY = o.scale * 1.2;
+                update = true;
+            });
+
+            createjs.Ticker.addEventListener("tick", tick); // update if there's activity
+
+            //stage.update();
+        }
+
+        function tick(event) {
+            // this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+            if (update) {
+                update = false; // only update once
+                stage.update(event);
+                console.log("updating");
+            }
+        }
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>

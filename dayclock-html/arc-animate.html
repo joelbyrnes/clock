@@ -1,0 +1,63 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+          background: #000000;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var container;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            var xCenter = canvas.width / 2;
+            var yCenter = canvas.height / 2;
+
+            container = new createjs.Container();
+            container.regX = xCenter;
+            container.regY = yCenter;
+            container.x = xCenter;
+            container.y = yCenter;
+		    stage.addChild(container);
+
+            container.addChild(strokeArc(stage, "red", 10, xCenter, yCenter, 50, 0 * Math.PI, 1.5 * Math.PI, 1));
+            container.addChild(strokeArc(stage, "blue", 10, xCenter, yCenter, 35, 0.5 * Math.PI, 2 * Math.PI, -2));
+
+            var greenContainer = new createjs.Container();
+            greenContainer.regX = xCenter;
+            greenContainer.regY = yCenter;
+            greenContainer.x = xCenter;
+            greenContainer.y = yCenter;
+            greenContainer.rotateRate = -9;
+		    container.addChild(greenContainer);
+
+            greenContainer.addChild(strokeArc(stage, "green", 10, xCenter, yCenter, 20, 0 * Math.PI, 0.5 * Math.PI));
+            greenContainer.addChild(strokeArc(stage, "green", 10, xCenter, yCenter, 20, 1.0 * Math.PI, 1.5 * Math.PI));
+
+            container.addChild(strokeArc(stage, "purple", 5, xCenter, yCenter, 10, 0 * Math.PI, 1.5 * Math.PI, 5));
+
+            createjs.Ticker.addEventListener("tick", tick); // update if there's movement
+        }
+
+        function tick(event) {
+
+            container.getChildAt(0).rotation += container.getChildAt(0).rotateRate;
+            container.getChildAt(1).rotation += container.getChildAt(1).rotateRate;
+            container.getChildAt(2).rotation += container.getChildAt(2).rotateRate;
+            container.getChildAt(3).rotation += container.getChildAt(3).rotateRate;
+
+            stage.update(event);
+        }
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>
