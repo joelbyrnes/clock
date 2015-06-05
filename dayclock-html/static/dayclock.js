@@ -1,10 +1,10 @@
 
-function strokeArc(colour, style, x, y, radius, startRads, endRads, rotateRate) {
+function strokeArc(colour, strokeStyle, x, y, radius, startRads, endRads, rotateRate) {
     var arc = new createjs.Shape();
 
     arc.graphics
         .beginStroke(colour)
-        .setStrokeStyle(style)
+        .setStrokeStyle(strokeStyle)
         .arc(0, 0, radius, startRads, endRads)
         .setStrokeStyle(0)
         .closePath();
