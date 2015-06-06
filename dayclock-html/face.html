@@ -8,6 +8,12 @@
         body {
           background: #000000;
         }
+
+        /*horizontally center the canvas*/
+        #demoCanvas {
+            display: block;
+            margin: 0 auto;
+        }
     </style>
     <script>
     	var canvas, stage;
@@ -24,9 +30,7 @@
 
             face = new createjs.Container();
 		    stage.addChild(face);
-            face.xCenter = xCenter;
-            face.yCenter = yCenter;
-            
+
             var start = 0;
             var end = 0.3333;
 
@@ -57,7 +61,7 @@
             var h = 178;
             while (h > 20) {
                 face.addChild(createCell(xCenter, yCenter,
-                        {radius:h -= 5, height: 5, start: start, end: end, color: "lightgreen", rotateRate: 10 - h/20}));
+                        {radius:h -= 5, height: 8, start: start, end: end, color: "lightgreen", alpha: 0.9, rotateRate: 10 - h/20}));
             }
 
             createjs.Ticker.addEventListener("tick", tick);
@@ -66,14 +70,8 @@
         function addCells(xCenter, yCenter, cells) {
             for (var c=0; c < cells.length; c++) {
                 face.addChild(createCell(xCenter, yCenter, cells[c]));
+                console.log("added cell " + cells[c].name);
             }
-        }
-
-        function createCell(xCenter, yCenter, cell) {
-            var arc = strokeArc(cell.color, cell.height, xCenter, yCenter, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI, cell.rotateRate);
-            arc.name = cell.name;
-            console.log("adding cell " + cell.name);
-            return arc;
         }
 
         function tick(event) {

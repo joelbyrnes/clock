@@ -17,3 +17,24 @@ function strokeArc(colour, strokeStyle, x, y, radius, startRads, endRads, rotate
     return arc;
 }
 
+function createCell(x, y, cell) {
+    var arc = new createjs.Shape();
+
+    arc.graphics
+        .beginStroke(cell.color)
+        .setStrokeStyle(cell.height)
+        .arc(0, 0, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
+        .setStrokeStyle(0)
+        .closePath();
+
+    // the shape is created with a center at 0,0 then moved to its x,y so rotation will work
+    arc.x = x;
+    arc.y = y;
+
+    arc.name = cell.name;
+    arc.rotateRate = cell.rotateRate;
+    arc.alpha = cell.alpha || 1.0;
+
+    return arc;
+}
+
