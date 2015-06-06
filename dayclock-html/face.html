@@ -20,49 +20,28 @@
 
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
-            var maxRadius = 100;
-            var gap = 0;
-            var height = 10;
 
             face = new createjs.Container();
 		    stage.addChild(face);
 
-		    var rows = [
-                [
-                    {name: "C", start: 0, end: 1, color: "#00ee00", height: 2}
-                ],
-		        [
-                    {name: "A", start: 0.1, end: 0.4, color: "red", xrotateRate: 1},
-                    {name: "B", start: 0.5, end: 0.6, color: "#00e010", xrotateRate: 1}
-                ],
-                [
-                    {name: "C", start: 0.76, end: 1.1, color: "blue"}
-                ],
-		        [
-                    {name: "D", start: 0, end: 0.25, color: "green"},
-                    {name: "E", start: 0.50, end: 0.75, color: "green"}
-                ]
+		    var cells = [
+                {name: "A", radius:100, height: 2, start: 0, end: 1, color: "#00ee00"},
+                {name: "B", radius:98, height: 10, start: 0.1, end: 0.4, color: "red", rotateRate: 1},
+                {name: "C", radius:98, height: 10, start: 0.5, end: 0.6, color: "#10e010", rotateRate: 1},
+                {name: "D", radius:88, height: 10, start: 0.76, end: 1.1, color: "blue"},
+                {name: "E", radius:78, height: 10, start: 0, end: 0.25, color: "green"},
+                {name: "F", radius:78, height: 10, start: 0.50, end: 0.75, color: "green"}
 		    ];
 
-            var radius = maxRadius;
+            console.log(cells);
 
-            console.log(rows);
+            for (var c=0; c < cells.length; c++) {
+                var cell = cells[c];
+                var arc = strokeArc(cell.color, cell.height, xCenter, yCenter, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI, cell.rotateRate);
+                arc.name = cell.name;
 
-            for (var r=0; r < rows.length; r++) {
-                console.log("adding outer row " + r);
-                var row = rows[r];
-
-                for (var c=0; c < row.length; c++) {
-                    var cell = row[c];
-                    var h = cell.height || height;
-                    var arc = strokeArc(cell.color, h, xCenter, yCenter, radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI, cell.rotateRate);
-                    arc.name = cell.name;
-
-                    console.log("adding row " + r + ", cell " + c);
-                    face.addChild(arc);
-                }
-
-                radius = radius - h - gap;
+                console.log("adding cell " + c);
+                face.addChild(arc);
             }
 
             createjs.Ticker.addEventListener("tick", tick);
