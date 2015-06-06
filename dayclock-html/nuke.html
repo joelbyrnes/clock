@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>DayClock</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+          background: #000000;
+        }
+
+        /*horizontally center the canvas*/
+        #demoCanvas {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var face;
+        var animate = true;
+        var rotateFactor = 0;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            var xCenter = canvas.width / 2;
+            var yCenter = canvas.height / 2;
+
+            face = new createjs.Container();
+		    stage.addChild(face);
+
+            var start = 0;
+            var end = 0.3333;
+
+
+            var nuke = [
+                {radius:180, height: 8, start: 0, end: 1, color: "yellow"},
+                {radius:18, height: 36, start: 0, end: 1, color: "yellow"},
+                {radius:105, height: 110, start: 0, end: 1/6, color: "yellow"},
+                {radius:105, height: 110, start: (1/6) * 2, end: (1/6) * 3, color: "yellow"},
+                {radius:105, height: 110, start: (1/6) * 4, end: (1/6) * 5, color: "yellow"}
+            ];
+
+            addCells(xCenter, yCenter, nuke);
+
+            createjs.Ticker.addEventListener("tick", tick);
+        }
+
+        function addCells(xCenter, yCenter, cells) {
+            for (var c=0; c < cells.length; c++) {
+                face.addChild(createCell(xCenter, yCenter, cells[c]));
+                console.log("added cell " + cells[c].name);
+            }
+        }
+
+        function tick(event) {
+
+            if (animate) {
+                for (var i=0; i < face.numChildren; i++) {
+                    var child = face.getChildAt(i);
+                    child.rotation += child.rotateRate * rotateFactor;
+                }
+
+                stage.update(event);
+            }
+        }
+
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>
