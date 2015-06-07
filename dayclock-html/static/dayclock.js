@@ -23,7 +23,8 @@ function createCell(x, y, cell) {
     arc.graphics
         .beginStroke(cell.color)
         .setStrokeStyle(cell.height)
-        .arc(0, 0, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
+//        .arc(0, 0, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
+        .arc(0, 0, cell.radius + (cell.height / 2), cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
         .setStrokeStyle(0)
         .closePath();
 
@@ -37,4 +38,11 @@ function createCell(x, y, cell) {
 
     return arc;
 }
+
+function addCells(container, xCenter, yCenter, cells) {
+    for (var c=0; c < cells.length; c++) {
+        container.addChild(createCell(xCenter, yCenter, cells[c]));
+    }
+}
+
 
