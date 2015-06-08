@@ -6,7 +6,7 @@
     <script src="static/dayclock.js"></script>
     <style>
         body {
-          background: #000000;
+            background: #000000;
         }
 
         /*horizontally center the canvas*/
@@ -26,11 +26,17 @@
 
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
-            var maxRadius = 200;
-            var gap = 0;
 
             face = new createjs.Container();
-		    stage.addChild(face);
+            stage.addChild(face);
+
+            // TODO can get x y from face?
+            draw(face, xCenter, yCenter);
+
+            createjs.Ticker.addEventListener("tick", tick);
+        }
+
+        function draw(face, xCenter, yCenter) {
 
 		    var rows = [
                 [
@@ -43,18 +49,22 @@
                 [
                     {name: "C", start: 0.76, end: 1.1, color: "blue"}
                 ],
-		        [
+                [
                     {name: "D", start: 0, end: 0.25, color: "green"},
                     {name: "E", start: 0.50, end: 0.75, color: "green"}
                 ]
-		    ];
-
-            var radius = maxRadius;
-            // always leave an empty space at the bottom
-            // TODO minus sum of optional specified heights
-            var height = maxRadius / (rows.length + 1);
+            ];
 
             console.log(rows);
+
+            var maxRadius = 200;
+            var gap = 0;
+
+            // always leave an empty space at the bottom
+            // TODO minus sum of optional specified heights and row gaps
+            var height = maxRadius / (rows.length + 1);
+
+            var radius = maxRadius;
 
             for (var r=0; r < rows.length; r++) {
                 console.log("adding outer row " + r);
