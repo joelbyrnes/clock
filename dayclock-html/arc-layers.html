@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Circular graphics</title>
+    <title>Circular graphics - Arc Layers</title>
     <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
     <script src="static/createjs-2015.05.21.min.js"></script>
     <script src="static/dayclock.js"></script>
@@ -40,15 +40,15 @@
 
 		    var rows = [
                 [
-                    {name: "A", start: 0, end: 1, color: "lightblue", xheight: 2}
+                    {name: "A", start: 0, end: 1, color: "lightblue", xheight: 0.2}
                 ],
 		        [
                     {name: "B", start: 0.1, end: 0.4, color: "red"},
                     {name: "C", start: 0.4, end: 0.6, color: "#00e010"},
-                    {name: "C", start: 0.6, end: 0.9, color: "#00e010", height: 10}
+                    {name: "C", start: 0.6, end: 0.9, color: "#00e010", height: 0.5}
                 ],
                 [
-                    {name: "D", start: 0, end: 1, color: "lightblue", height: 2}
+                    {name: "D", start: 0, end: 1, color: "lightblue", height: 0.2}
                 ],
                 [
                     {name: "E", start: 0.76, end: 1.1, color: "blue"}
@@ -57,6 +57,7 @@
                     {name: "F", start: 0, end: 0.25, color: "green"},
                     {name: "G", start: 0.50, end: 0.75, color: "green"}
                 ],
+                // leave an empty spot at the bottom
                 []
             ];
 
@@ -65,10 +66,7 @@
             var maxRadius = 200;
             var gap = Math.floor(maxRadius / 100);
 
-            // TODO minus sum of optional specified heights and row gaps
-            var reservedHeight = 0;
-
-            var height = Math.floor((maxRadius - ((rows.length) * gap) - reservedHeight) / (rows.length));
+            var height = Math.floor((maxRadius - ((rows.length) * gap)) / (rows.length));
 
             console.log("gap " + gap);
             console.log("reservedHeight " + reservedHeight);
@@ -83,7 +81,7 @@
 
                 for (var c=0; c < row.length; c++) {
                     var cell = row[c];
-                    var h = cell.height || height;
+                    var h = (cell.height || 1) * height;
 
                     var data = {name: cell.name, radius: rad, height: h, start: cell.start, end: cell.end, color: cell.color, alpha: cell.alpha};
                     cells.push(data);
