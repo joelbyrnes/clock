@@ -63,13 +63,8 @@
             var timeCells = [];
             for (var i=0; i < activities.length; i++) {
                 console.log("adding activity layer " + i);
-                var act = activities[i];
                 var rad = (maxRadius - ((height + gap) * (i + 1)));
-                var h = (act.height || 1) * height;
-
-                var start = ((act.start - midnight) / millis24hour);
-                var end =  ((act.end - midnight) / millis24hour);
-                var cell = {name: act.name, radius: rad, height: h, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
+                var cell = createActivityCell(rad, height, activities[i]);
                 console.log(cell);
                 timeCells.push(cell)
             }
@@ -80,15 +75,20 @@
             addCells(face, xCenter, yCenter, timeCells);
 
             drawTimePassedShadow(face, xCenter, yCenter, maxRadius);
+        }
 
-            stage.update();
+        function createActivityCell(rad, defaultHeight, act) {
+            var h = (act.height || 1) * defaultHeight;
+            // adjust the rendering so midnight is at the top
+            var start = ((act.start - midnight) / millis24hour) - 0.25;
+            var end =  ((act.end - midnight) / millis24hour) - 0.25;
+            return {name: act.name, radius: rad, height: h, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
         }
 
         function drawTimePassedShadow(face, xCenter, yCenter, maxRadius) {
-            var end = ((moment() - midnight) / millis24hour);
-            var shadow = {name: "shadow", radius:10, height: maxRadius, start: 0, end: end, color: "#000000", alpha: 0.5};
+            var shadow = {name: "shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
 //            console.log(shadow);
-            face.addChild(createCell(xCenter, yCenter, shadow));
+            face.addChild(createCell(xCenter, yCenter, createActivityCell(10, maxRadius, shadow)));
         }
 
         function time(hour, min) {
