@@ -24,6 +24,9 @@
         var animate = true;
         var rotateFactor = 1;
 
+        var midnight = time(0,0);
+        var millis24hour = 24 * 60 * 60 * 1000;
+
         function init() {
             canvas = document.getElementById("demoCanvas");
             stage = new createjs.Stage(canvas);
@@ -53,11 +56,6 @@
                 {},
             ];
 
-            console.log(activities);
-
-            var midnight = time(0,0);
-            var millis24hour = 24 * 60 * 60 * 1000;
-
             var gap = Math.floor(maxRadius / 100);
             // for now every activity has its own layer - later, merge ones that don't overlap.
             var height = Math.floor((maxRadius - ((activities.length) * gap)) / (activities.length));
@@ -79,9 +77,18 @@
             // outer ring
 //            face.addChild(createCell(xCenter, yCenter, {name: "outer", radius:maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
-//            drawTimePassedShadow(midnight, now);
-
             addCells(face, xCenter, yCenter, timeCells);
+
+            drawTimePassedShadow(face, xCenter, yCenter, maxRadius);
+
+            stage.update();
+        }
+
+        function drawTimePassedShadow(face, xCenter, yCenter, maxRadius) {
+            var end = ((moment() - midnight) / millis24hour);
+            var shadow = {name: "shadow", radius:10, height: maxRadius, start: 0, end: end, color: "#000000", alpha: 0.5};
+//            console.log(shadow);
+            face.addChild(createCell(xCenter, yCenter, shadow));
         }
 
         function time(hour, min) {
