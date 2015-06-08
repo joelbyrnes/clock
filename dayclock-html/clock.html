@@ -15,6 +15,7 @@
         #demoCanvas {
             display: block;
             margin: 0 auto;
+            background: #222222;
         }
     </style>
     <script>
@@ -29,22 +30,27 @@
 
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
+            // more accurately, distance from xy and edge?
+            var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
 
             face = new createjs.Container();
             stage.addChild(face);
 
             // TODO can get x y from face?
-            draw(face, xCenter, yCenter);
+            draw(face, xCenter, yCenter, maxRadius);
 
             createjs.Ticker.addEventListener("tick", tick);
         }
 
-        function draw(face, xCenter, yCenter) {
+        function draw(face, xCenter, yCenter, maxRadius) {
 
             var activities = [
-                {name: "work", radius:160, height: 10, start: time(9, 30), end: time(18, 0), color: "orange"},
-                {name: "sleep", radius:140, height: 10, start: time(0, 0), end: time(7, 30), color: "blue"},
-                {name: "foo", radius:120, height: 10, start: time(18, 30), end: time(21, 30), color: "green"}
+                {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                {name: "foo",   start: time(18, 30), end: time(21, 30), color: "green"},
+                {},
+                {},
+                {},
             ];
 
             console.log(activities);
@@ -52,30 +58,30 @@
             var midnight = time(0,0);
             var millis24hour = 24 * 60 * 60 * 1000;
 
-            console.log("foo: " + moment().startOf('day').add(6, 'hours').add(30, 'minutes'));
-            console.log("midnight: " + midnight);
-            console.log("millis24hour: " + millis24hour);
-            console.log("midnight: " + midnight.get('millisecond'));
+            var gap = Math.floor(maxRadius / 100);
+            // for now every activity has its own layer - later, merge ones that don't overlap.
+            var height = Math.floor((maxRadius - ((activities.length) * gap)) / (activities.length));
 
-            var rows = [];
+            var timeCells = [];
             for (var i=0; i < activities.length; i++) {
+                console.log("adding activity layer " + i);
                 var act = activities[i];
-                console.log(act.start.format());
-                console.log(act.start.seconds());
-                console.log(act.start);
-                console.log(act.start.get('millisecond'));
+                var rad = (maxRadius - ((height + gap) * (i + 1)));
+                var h = (act.height || 1) * height;
+
                 var start = ((act.start - midnight) / millis24hour);
                 var end =  ((act.end - midnight) / millis24hour);
-                console.log(start);
-                console.log(end);
-                rows.push({name: act.name, radius: act.radius, height: act.height, start: start, end: end, color: act.color})
+                var cell = {name: act.name, radius: rad, height: h, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
+                console.log(cell);
+                timeCells.push(cell)
             }
+
+            // outer ring
+//            face.addChild(createCell(xCenter, yCenter, {name: "outer", radius:maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
 //            drawTimePassedShadow(midnight, now);
 
-            face.addChild(createCell(xCenter, yCenter, {name: "outer", radius:180, height: 2, start: 0, end: 1, color: "#505090"}));
-
-            addCells(face, xCenter, yCenter, rows);
+            addCells(face, xCenter, yCenter, timeCells);
         }
 
         function time(hour, min) {
