@@ -46,3 +46,48 @@ function addCells(container, xCenter, yCenter, cells) {
 }
 
 
+var Clock = function (face, x, y, maxRadius) {
+    this.face = face;
+    this.xCenter = x;
+    this.yCenter = y;
+    this.maxRadius = maxRadius;
+};
+
+Clock.prototype.drawTimePeriods = function(activities) {
+    var gap = Math.floor(this.maxRadius / 100);
+    // for now every activity has its own layer - later, merge ones that don't overlap.
+    var height = Math.floor((this.maxRadius - ((activities.length) * gap)) / (activities.length));
+
+    var timeCells = [];
+    for (var i=0; i < activities.length; i++) {
+        console.log("adding activity layer " + i);
+        var rad = (this.maxRadius - ((height + gap) * (i + 1)));
+        var cell = this.createActivityCell(rad, height, activities[i]);
+        console.log(cell);
+        timeCells.push(cell)
+    }
+
+    // outer ring
+//            this.face.addChild(createCell(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
+
+    // TODO absorb
+    addCells(this.face, this.xCenter, this.yCenter, timeCells);
+};
+
+Clock.prototype.createActivityCell = function(rad, defaultHeight, act) {
+    var h = (act.height || 1) * defaultHeight;
+    // adjust the rendering so midnight is at the top
+    var start = ((act.start - midnight) / millis24hour) - 0.25;
+    var end =  ((act.end - midnight) / millis24hour) - 0.25;
+    return {name: act.name, radius: rad, height: h, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
+};
+
+Clock.prototype.drawTimePassedShadow = function() {
+    var shadow = {name: "shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
+//            console.log(shadow);
+    this.face.addChild(createCell(this.xCenter, this.yCenter, this.createActivityCell(10, this.maxRadius, shadow)));
+};
+
+Clock.prototype.update = function() {
+    this.drawTimePassedShadow();
+};
