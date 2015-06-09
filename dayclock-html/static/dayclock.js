@@ -87,10 +87,23 @@ Circle.prototype.addCells = function(cells) {
 
 Circle.prototype.update = function() {
 //    console.log("circle updating");
+    for (var i=0; i < this.face.numChildren; i++) {
+        var child = this.face.getChildAt(i);
+        child.rotation += child.rotateRate * rotateFactor;
+    }
 };
 
 
-// layered circle
+// TODO layered circle, becomes Clock
+
+var LayeredCircle = function (face, x, y, maxRadius) {
+    Circle.call(this, face, x, y);
+    this.maxRadius = maxRadius;
+};
+
+LayeredCircle.prototype = Object.create(Circle.prototype);
+LayeredCircle.prototype.constructor = LayeredCircle;
+
 
 
 var Clock = function (face, x, y, maxRadius) {

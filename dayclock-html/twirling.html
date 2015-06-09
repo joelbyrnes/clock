@@ -50,10 +50,7 @@
         function tick(event) {
 
             if (animate) {
-                for (var i=0; i < circle.face.numChildren; i++) {
-                    var child = circle.face.getChildAt(i);
-                    child.rotation += child.rotateRate * rotateFactor;
-                }
+                circle.update();
 
                 stage.update(event);
             }
