@@ -17,6 +17,7 @@ function strokeArc(colour, strokeStyle, x, y, radius, startRads, endRads, rotate
     return arc;
 }
 
+// TODO remove
 function createCell(x, y, cell) {
     var arc = new createjs.Shape();
 
@@ -39,22 +40,44 @@ function createCell(x, y, cell) {
     return arc;
 }
 
+// TODO remove
 function addCells(container, xCenter, yCenter, cells) {
     for (var c=0; c < cells.length; c++) {
         container.addChild(createCell(xCenter, yCenter, cells[c]));
     }
 }
 
-var Circle = function (face, x, y, maxRadius) {
+var Circle = function (face, x, y) {
     this.face = face;
     this.xCenter = x;
     this.yCenter = y;
-    this.maxRadius = maxRadius;
+};
+
+Circle.prototype.createCell = function(cell) {
+    var arc = new createjs.Shape();
+
+    arc.graphics
+        .beginStroke(cell.color)
+        .setStrokeStyle(cell.height)
+//        .arc(0, 0, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
+        .arc(0, 0, cell.radius + (cell.height / 2), cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
+        .setStrokeStyle(0)
+        .closePath();
+
+    // the shape is created with a center at 0,0 then moved to its x,y so rotation will work
+    arc.x = this.xCenter;
+    arc.y = this.yCenter;
+
+    arc.name = cell.name;
+    arc.rotateRate = cell.rotateRate;
+    arc.alpha = cell.alpha || 1.0;
+
+    return arc;
 };
 
 Circle.prototype.addCells = function(cells) {
     for (var c=0; c < cells.length; c++) {
-        this.face.addChild(createCell(this.xCenter, this.yCenter, cells[c]));
+        this.face.addChild(this.createCell(cells[c]));
     }
 };
 
@@ -67,11 +90,12 @@ Circle.prototype.update = function() {
 
 
 var Clock = function (face, x, y, maxRadius) {
-    this.face = face;
-    this.xCenter = x;
-    this.yCenter = y;
+    Circle.call(this, face, x, y);
     this.maxRadius = maxRadius;
 };
+
+Clock.prototype = Object.create(Circle.prototype);
+Clock.prototype.constructor = Clock;
 
 Clock.prototype.drawTimePeriods = function(activities) {
     var gap = Math.floor(this.maxRadius / 100);
@@ -90,8 +114,7 @@ Clock.prototype.drawTimePeriods = function(activities) {
     // outer ring
 //            this.face.addChild(createCell(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
-    // TODO absorb
-    addCells(this.face, this.xCenter, this.yCenter, timeCells);
+    this.addCells(timeCells);
 };
 
 Clock.prototype.createActivityCell = function(rad, defaultHeight, act) {
