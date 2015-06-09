@@ -43,7 +43,11 @@
 
             draw(clock);
 
+            // redraw every 1s
+            createjs.Ticker.setFPS(1);
             createjs.Ticker.addEventListener("tick", tick);
+
+            stage.update();
         }
 
         function draw(clock) {
@@ -67,10 +71,8 @@
         }
 
         function tick(event) {
-
             if (animate) {
-                // TODO redraw
-//                clock.update();
+                clock.update();
             }
 
             stage.update(event);

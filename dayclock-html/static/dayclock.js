@@ -83,11 +83,13 @@ Clock.prototype.createActivityCell = function(rad, defaultHeight, act) {
 };
 
 Clock.prototype.drawTimePassedShadow = function() {
-    var shadow = {name: "shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
+    var shadow = {name: "__shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
 //            console.log(shadow);
     this.face.addChild(createCell(this.xCenter, this.yCenter, this.createActivityCell(10, this.maxRadius, shadow)));
 };
 
 Clock.prototype.update = function() {
+    console.log("clock updating");
+    this.face.removeChild(this.face.getChildByName("__shadow"));
     this.drawTimePassedShadow();
 };
