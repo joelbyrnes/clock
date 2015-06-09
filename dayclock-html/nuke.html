@@ -26,12 +26,13 @@
             var face = new createjs.Container();
 		    stage.addChild(face);
 
-            draw(face, xCenter, yCenter);
+            face = new Circle(face, xCenter, yCenter);
+            draw(face);
 
             stage.update();
         }
 
-        function draw(face, xCenter, yCenter) {
+        function draw(face) {
             var nuke = [
                 {radius:192, height: 8, start: 0, end: 1, color: "yellow"},
                 {radius:0, height: 40, start: 0, end: 1, color: "yellow"},
@@ -40,7 +41,7 @@
                 {radius:56, height: 120, start: (1/6) * 4, end: (1/6) * 5, color: "yellow"}
             ];
 
-            addCells(face, xCenter, yCenter, nuke);
+            face.addCells(nuke);
         }
 
     </script>

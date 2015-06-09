@@ -32,8 +32,8 @@
             face = new createjs.Container();
             stage.addChild(face);
 
-            // TODO can get x y from face?
-            draw(face, xCenter, yCenter, maxRadius);
+            face = new Circle(face, xCenter, yCenter);
+            draw(face);
 
             createjs.Ticker.addEventListener("tick", tick);
         }

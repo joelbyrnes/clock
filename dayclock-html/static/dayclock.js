@@ -75,6 +75,10 @@ Circle.prototype.createCell = function(cell) {
     return arc;
 };
 
+Circle.prototype.addCell = function(cell) {
+    this.face.addChild(this.createCell(cell));
+};
+
 Circle.prototype.addCells = function(cells) {
     for (var c=0; c < cells.length; c++) {
         this.face.addChild(this.createCell(cells[c]));
