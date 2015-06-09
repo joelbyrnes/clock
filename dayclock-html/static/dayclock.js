@@ -45,6 +45,26 @@ function addCells(container, xCenter, yCenter, cells) {
     }
 }
 
+var Circle = function (face, x, y, maxRadius) {
+    this.face = face;
+    this.xCenter = x;
+    this.yCenter = y;
+    this.maxRadius = maxRadius;
+};
+
+Circle.prototype.addCells = function(cells) {
+    for (var c=0; c < cells.length; c++) {
+        this.face.addChild(createCell(this.xCenter, this.yCenter, cells[c]));
+    }
+};
+
+Circle.prototype.update = function() {
+//    console.log("circle updating");
+};
+
+
+// layered circle
+
 
 var Clock = function (face, x, y, maxRadius) {
     this.face = face;

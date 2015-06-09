@@ -17,7 +17,7 @@
     </style>
     <script>
         var canvas, stage;
-        var face;
+        var circle;
         var animate = true;
         var rotateFactor = 1;
 
@@ -27,17 +27,18 @@
 
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
+            var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
 
-            face = new createjs.Container();
+            var face = new createjs.Container();
             stage.addChild(face);
 
-            // TODO can get x y from face?
-            draw(face, xCenter, yCenter);
+            circle = new Circle(face, xCenter, yCenter, maxRadius);
+            draw(circle);
 
             createjs.Ticker.addEventListener("tick", tick);
         }
 
-        function draw(face, xCenter, yCenter) {
+        function draw(circle) {
             var color = "lightgreen";
             var alpha = 0.15;
             var height = 88;
@@ -72,16 +73,17 @@
                 {}
             ];
 
-            addCells(face, xCenter, yCenter, cells);
+            circle.addCells(cells);
         }
 
         function tick(event) {
 
             if (animate) {
-                for (var i=0; i < face.numChildren; i++) {
-                    var child = face.getChildAt(i);
+                for (var i=0; i < circle.face.numChildren; i++) {
+                    var child = circle.face.getChildAt(i);
                     child.rotation += child.rotateRate * rotateFactor;
                 }
+                circle.update();
 
                 stage.update(event);
             }
