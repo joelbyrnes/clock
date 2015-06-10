@@ -89,7 +89,7 @@ Circle.prototype.update = function() {
 //    console.log("circle updating");
     for (var i=0; i < this.face.numChildren; i++) {
         var child = this.face.getChildAt(i);
-        child.rotation += child.rotateRate * rotateFactor;
+        child.rotation += child.rotateRate;
     }
 };
 
@@ -103,6 +103,41 @@ var LayeredCircle = function (face, x, y, maxRadius) {
 
 LayeredCircle.prototype = Object.create(Circle.prototype);
 LayeredCircle.prototype.constructor = LayeredCircle;
+
+LayeredCircle.prototype.addLayers = function(rows) {
+    console.log(rows);
+
+    var gap = Math.floor(this.maxRadius / 100);
+
+    var height = Math.floor((this.maxRadius - ((rows.length) * gap)) / (rows.length));
+
+    console.log(this.maxRadius);
+    console.log("gap " + gap);
+    console.log("height " + height);
+
+    var cells = [];
+
+    for (var r=0; r < rows.length; r++) {
+        console.log("adding outer row " + r);
+        var row = rows[r];
+        var rad = (this.maxRadius - ((height + gap) * (r + 1)));
+
+        for (var c=0; c < row.length; c++) {
+            var cell = row[c];
+            var h = (cell.height || 1) * height;
+
+            var data = {name: cell.name, radius: rad, height: h, start: cell.start, end: cell.end,
+                color: cell.color, alpha: cell.alpha, rotateRate:cell.rotateRate};
+            cells.push(data);
+
+            console.log("adding row " + r + ", cell " + c);
+            console.log(data);
+        }
+
+    }
+
+    this.addCells(cells);
+};
 
 
 

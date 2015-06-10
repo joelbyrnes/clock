@@ -29,16 +29,16 @@
             // more accurately, distance from xy and edge?
             var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
 
-            face = new createjs.Container();
-            stage.addChild(face);
+            var container = new createjs.Container();
+            stage.addChild(container);
 
-            face = new Circle(face, xCenter, yCenter);
+            face = new LayeredCircle(container, xCenter, yCenter, maxRadius);
             draw(face);
 
             createjs.Ticker.addEventListener("tick", tick);
         }
 
-        function draw(face, xCenter, yCenter, maxRadius) {
+        function draw(face) {
 
 		    var rows = [
                 [
@@ -63,45 +63,12 @@
                 []
             ];
 
-            console.log(rows);
-
-            var gap = Math.floor(maxRadius / 100);
-
-            var height = Math.floor((maxRadius - ((rows.length) * gap)) / (rows.length));
-
-            console.log(maxRadius);
-            console.log("gap " + gap);
-            console.log("height " + height);
-
-            var cells = [];
-
-            for (var r=0; r < rows.length; r++) {
-                console.log("adding outer row " + r);
-                var row = rows[r];
-                var rad = (maxRadius - ((height + gap) * (r + 1)));
-
-                for (var c=0; c < row.length; c++) {
-                    var cell = row[c];
-                    var h = (cell.height || 1) * height;
-
-                    var data = {name: cell.name, radius: rad, height: h, start: cell.start, end: cell.end, color: cell.color, alpha: cell.alpha, rotateRate:cell.rotateRate};
-                    cells.push(data);
-
-                    console.log("adding row " + r + ", cell " + c);
-                    console.log(data);
-                }
-
-            }
-
-            addCells(face, xCenter, yCenter, cells);
+            face.addLayers(rows);
         }
 
         function tick(event) {
 
-            for (var i=0; i < face.numChildren; i++) {
-                var child = face.getChildAt(i);
-                child.rotation += child.rotateRate;
-            }
+            face.update();
 
             stage.update(event);
         }
