@@ -7,13 +7,16 @@
     <script src="static/dayclock.js"></script>
     <style>
         body {
-          background: #000000;
+            background: #000000;
+            padding: 0;
+            margin: 0;
         }
 
         /*horizontally center the canvas*/
         #demoCanvas {
             display: block;
             margin: 0 auto;
+            /*background: #222222;*/
         }
     </style>
     <script>
@@ -46,12 +49,20 @@
         function draw(circle, maxRadius) {
             var start = 0;
             var end = 0.3333;
-            // TODO this used to be set to 178 but now it's full screen, make the count fixed
-            var h = maxRadius * 0.9;
+            var radius = maxRadius * 0.95;
+            var layerHeight = radius / 36;
+
+            var h = radius;
             var hue = 180;
-            while (h > 20) {
+            for (var i=0; i < 32; i++) {
+//                console.log("looping");
+
                 // TODO use hue to rgb conversion instead
-                circle.addCell({radius: h -= 5, height: 8, start: start, end: end, color: "rgb(" + Math.trunc(hue/1.3) + ", 44, " + (255 - Math.trunc(hue/1.8)) + ")", alpha: 0.9, rotateRate: 10 - h/20});
+                circle.addCell({radius: h -= layerHeight, height: layerHeight * 1.6, start: start, end: end,
+                    color: "rgb(" + Math.trunc(hue/1.3) + ", 44, " + (255 - Math.trunc(hue/1.8)) + ")",
+                    alpha: 0.9,
+                    rotateRate: 10 - hue/20});
+
                 hue -= 5;
             }
         }
