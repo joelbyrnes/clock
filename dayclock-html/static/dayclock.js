@@ -94,8 +94,6 @@ Circle.prototype.update = function() {
 };
 
 
-// TODO layered circle, becomes Clock
-
 var LayeredCircle = function (face, x, y, maxRadius) {
     Circle.call(this, face, x, y);
     this.maxRadius = maxRadius;
@@ -105,20 +103,13 @@ LayeredCircle.prototype = Object.create(Circle.prototype);
 LayeredCircle.prototype.constructor = LayeredCircle;
 
 LayeredCircle.prototype.addLayers = function(rows) {
-    console.log(rows);
-
     var gap = Math.floor(this.maxRadius / 100);
-
     var height = Math.floor((this.maxRadius - ((rows.length) * gap)) / (rows.length));
-
-    console.log(this.maxRadius);
-    console.log("gap " + gap);
-    console.log("height " + height);
 
     var cells = [];
 
     for (var r=0; r < rows.length; r++) {
-        console.log("adding outer row " + r);
+        console.log("adding layer " + r);
         var row = rows[r];
         var rad = (this.maxRadius - ((height + gap) * (r + 1)));
 
@@ -130,7 +121,7 @@ LayeredCircle.prototype.addLayers = function(rows) {
                 color: cell.color, alpha: cell.alpha, rotateRate:cell.rotateRate};
             cells.push(data);
 
-            console.log("adding row " + r + ", cell " + c);
+            console.log("adding layer " + r + ", cell " + c);
             console.log(data);
         }
 
@@ -154,19 +145,19 @@ Clock.prototype.drawTimePeriods = function(activities) {
     // for now every activity has its own layer - later, merge ones that don't overlap.
     var height = Math.floor((this.maxRadius - ((activities.length) * gap)) / (activities.length));
 
-    var timeCells = [];
+    var cells = [];
     for (var i=0; i < activities.length; i++) {
         console.log("adding activity layer " + i);
         var rad = (this.maxRadius - ((height + gap) * (i + 1)));
         var cell = this.createActivityCell(rad, height, activities[i]);
         console.log(cell);
-        timeCells.push(cell)
+        cells.push(cell)
     }
 
     // outer ring
 //            this.face.addChild(createCell(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
-    this.addCells(timeCells);
+    this.addCells(cells);
 };
 
 Clock.prototype.createActivityCell = function(rad, defaultHeight, act) {
