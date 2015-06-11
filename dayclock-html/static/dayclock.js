@@ -133,45 +133,49 @@ LayeredCircle.prototype.addLayers = function(rows) {
 
 
 var Clock = function (face, x, y, maxRadius) {
-    Circle.call(this, face, x, y);
+    LayeredCircle.call(this, face, x, y);
     this.maxRadius = maxRadius;
 };
 
-Clock.prototype = Object.create(Circle.prototype);
+Clock.prototype = Object.create(LayeredCircle.prototype);
 Clock.prototype.constructor = Clock;
 
 Clock.prototype.drawTimePeriods = function(activities) {
-    var gap = Math.floor(this.maxRadius / 100);
     // for now every activity has its own layer - later, merge ones that don't overlap.
-    var height = Math.floor((this.maxRadius - ((activities.length) * gap)) / (activities.length));
 
-    var cells = [];
+    var layers = [];
+
     for (var i=0; i < activities.length; i++) {
-        console.log("adding activity layer " + i);
-        var rad = (this.maxRadius - ((height + gap) * (i + 1)));
-        var cell = this.createActivityCell(rad, height, activities[i]);
+        console.log("adding activity " + i);
+        var cell = this.createActivityCell(activities[i]);
         console.log(cell);
-        cells.push(cell)
+        layers.push([cell]);
     }
 
     // outer ring
 //            this.face.addChild(createCell(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
-    this.addCells(cells);
+    this.addLayers(layers);
 };
 
-Clock.prototype.createActivityCell = function(rad, defaultHeight, act) {
-    var h = (act.height || 1) * defaultHeight;
+// effectively turns times into start and end positions
+Clock.prototype.createActivityCell = function(act) {
     // adjust the rendering so midnight is at the top
     var start = ((act.start - midnight) / millis24hour) - 0.25;
     var end =  ((act.end - midnight) / millis24hour) - 0.25;
-    return {name: act.name, radius: rad, height: h, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
+
+    return {name: act.name, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
 };
 
 Clock.prototype.drawTimePassedShadow = function() {
     var shadow = {name: "__shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
-//            console.log(shadow);
-    this.face.addChild(createCell(this.xCenter, this.yCenter, this.createActivityCell(10, this.maxRadius, shadow)));
+    var cell = this.createActivityCell(shadow);
+    cell.height = this.maxRadius;
+    cell.radius = 10;
+//    console.log("shadow ");
+//    console.log(cell);
+    var cellShape = this.createCell(cell);
+    this.face.addChild(cellShape);
 };
 
 Clock.prototype.update = function() {
