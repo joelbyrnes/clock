@@ -3,3 +3,8 @@
 *.ipr
 *.iws
 
+build
+build.log
+build-log.xml
+.gradle
+
