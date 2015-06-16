@@ -1,59 +1,15 @@
 
-function strokeArc(colour, strokeStyle, x, y, radius, startRads, endRads, rotateRate) {
-    var arc = new createjs.Shape();
-
-    arc.graphics
-        .beginStroke(colour)
-        .setStrokeStyle(strokeStyle)
-        .arc(0, 0, radius, startRads, endRads)
-        .setStrokeStyle(0)
-        .closePath();
-
-    // the shape is created with a center at 0,0 then moved to its x,y so rotation will work
-    arc.x = x;
-    arc.y = y;
-    arc.rotateRate = rotateRate;
-
-    return arc;
-}
-
-// TODO remove
-function createCell(x, y, cell) {
-    var arc = new createjs.Shape();
-
-    arc.graphics
-        .beginStroke(cell.color)
-        .setStrokeStyle(cell.height)
-//        .arc(0, 0, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
-        .arc(0, 0, cell.radius + (cell.height / 2), cell.start * 2 * Math.PI, cell.end * 2 * Math.PI)
-        .setStrokeStyle(0)
-        .closePath();
-
-    // the shape is created with a center at 0,0 then moved to its x,y so rotation will work
-    arc.x = x;
-    arc.y = y;
-
-    arc.name = cell.name;
-    arc.rotateRate = cell.rotateRate;
-    arc.alpha = cell.alpha || 1.0;
-
-    return arc;
-}
-
-// TODO remove
-function addCells(container, xCenter, yCenter, cells) {
-    for (var c=0; c < cells.length; c++) {
-        container.addChild(createCell(xCenter, yCenter, cells[c]));
-    }
-}
-
-var Circle = function (face, x, y) {
-    this.face = face;
+var CircularGraphics = function (x, y) {
+    createjs.Container.call(this);
     this.xCenter = x;
     this.yCenter = y;
 };
 
-Circle.prototype.createCell = function(cell) {
+CircularGraphics.prototype = Object.create(createjs.Container.prototype);
+CircularGraphics.prototype.constructor = CircularGraphics;
+
+// ring segment, or circular sector, or annular sector, or whatever it's called
+CircularGraphics.prototype.sectorShape = function(cell) {
     var arc = new createjs.Shape();
 
     arc.graphics
@@ -75,34 +31,39 @@ Circle.prototype.createCell = function(cell) {
     return arc;
 };
 
-Circle.prototype.addCell = function(cell) {
-    this.face.addChild(this.createCell(cell));
+CircularGraphics.prototype.addSector = function(cell) {
+    this.addChild(this.sectorShape(cell));
 };
 
-Circle.prototype.addCells = function(cells) {
+CircularGraphics.prototype.addSectors = function(cells) {
     for (var c=0; c < cells.length; c++) {
-        this.face.addChild(this.createCell(cells[c]));
+        this.addChild(this.sectorShape(cells[c]));
     }
 };
 
-Circle.prototype.update = function() {
+CircularGraphics.prototype.update = function() {
 //    console.log("circle updating");
-    for (var i=0; i < this.face.numChildren; i++) {
-        var child = this.face.getChildAt(i);
+    for (var i=0; i < this.numChildren; i++) {
+        var child = this.getChildAt(i);
         child.rotation += child.rotateRate;
     }
 };
 
 
-var LayeredCircle = function (face, x, y, maxRadius) {
-    Circle.call(this, face, x, y);
+var LayeredCircle = function (x, y, maxRadius) {
+    CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
+    this.rows = [];
 };
 
-LayeredCircle.prototype = Object.create(Circle.prototype);
+LayeredCircle.prototype = Object.create(CircularGraphics.prototype);
 LayeredCircle.prototype.constructor = LayeredCircle;
 
 LayeredCircle.prototype.addLayers = function(rows) {
+    this.rows.push(rows);
+};
+
+LayeredCircle.prototype.drawLayers = function(rows) {
     var gap = Math.floor(this.maxRadius / 100);
     var height = Math.floor((this.maxRadius - ((rows.length) * gap)) / (rows.length));
 
@@ -127,13 +88,24 @@ LayeredCircle.prototype.addLayers = function(rows) {
 
     }
 
-    this.addCells(cells);
+    this.addSectors(cells);
 };
 
+LayeredCircle.prototype.draw = function() {
+    console.log("drawing layers");
+    this.drawLayers(this.rows);
+};
+
+// TODO redraw everything?
+//LayeredCircle.prototype.update = function() {
+////    console.log("circle updating");
+////   TODO call super
+//};
 
 
-var Clock = function (face, x, y, maxRadius) {
-    LayeredCircle.call(this, face, x, y);
+
+var Clock = function (x, y, maxRadius) {
+    LayeredCircle.call(this, x, y);
     this.maxRadius = maxRadius;
 };
 
@@ -153,7 +125,7 @@ Clock.prototype.drawTimePeriods = function(activities) {
     }
 
     // outer ring
-//            this.face.addChild(createCell(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
+//            this.addChild(sectorShape(this.xCenter, this.yCenter, {name: "outer", radius:this.maxRadius-2, height: 2, start: 0, end: 1, color: "#505090"}));
 
     this.addLayers(layers);
 };
@@ -174,12 +146,12 @@ Clock.prototype.drawTimePassedShadow = function() {
     cell.radius = 10;
 //    console.log("shadow ");
 //    console.log(cell);
-    var cellShape = this.createCell(cell);
-    this.face.addChild(cellShape);
+    var cellShape = this.sectorShape(cell);
+    this.addChild(cellShape);
 };
 
 Clock.prototype.update = function() {
     console.log("clock updating");
-    this.face.removeChild(this.face.getChildByName("__shadow"));
+    this.removeChild(this.getChildByName("__shadow"));
     this.drawTimePassedShadow();
 };
