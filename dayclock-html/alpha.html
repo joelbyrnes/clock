@@ -17,7 +17,7 @@
     </style>
     <script>
         var canvas, stage;
-        var circle;
+        var face;
         var animate = true;
         var rotateFactor = 1;
 
@@ -28,16 +28,14 @@
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
 
-            var face = new createjs.Container();
+            face = new CircularGraphics(xCenter, yCenter);
             stage.addChild(face);
-
-            circle = new Circle(face, xCenter, yCenter);
-            draw(circle);
+            draw(face);
 
             createjs.Ticker.addEventListener("tick", tick);
         }
 
-        function draw(circle) {
+        function draw(face) {
             var color = "lightgreen";
             var alpha = 0.15;
             var height = 88;
@@ -67,18 +65,16 @@
                 {radius:100, height: 20, start: 0.08, end:0.17, color: color, alpha: alpha},
                 {radius:110, height: 5, start: 0.09, end:0.16, color: color, alpha: alpha},
 
-                {radius:45, height: 100, start: 0.25, end:0.45, color: color, alpha: 0.1, rotateRate : 5},
-
-                {}
+                {radius:45, height: 100, start: 0.25, end:0.45, color: color, alpha: 0.1, rotateRate : 5}
             ];
 
-            circle.addCells(cells);
+            face.addSectors(cells);
         }
 
         function tick(event) {
 
             if (animate) {
-                circle.update();
+                face.update();
 
                 stage.update(event);
             }
