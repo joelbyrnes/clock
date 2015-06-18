@@ -36,10 +36,8 @@
             // more accurately, distance from xy and edge?
             var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
 
-            var face = new createjs.Container();
-            stage.addChild(face);
-
-            clock = new Clock(face, xCenter, yCenter, maxRadius);
+            clock = new Clock(xCenter, yCenter, maxRadius);
+            stage.addChild(clock);
 
             draw(clock);
 
