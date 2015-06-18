@@ -21,7 +21,7 @@
     </style>
     <script>
     	var stage;
-        var circle;
+        var face;
         var animate = true;
         var rotateFactor = 1;
 
@@ -32,21 +32,26 @@
 
             stage = new createjs.Stage(canvas);
 
+            var ow = canvas.width;
+            var oh = canvas.height;
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
+            // more accurately, distance from xy and edge?
             var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
-            console.log("maxRadius " + maxRadius);
 
-            var container = new createjs.Container();
-		    stage.addChild(container);
-
-            circle = new Circle(container, xCenter, yCenter);
-            draw(circle, maxRadius);
+            face = new CircularGraphics(xCenter, yCenter);
+            stage.addChild(face);
+            draw(face, maxRadius);
+            resize(ow, oh, true);
 
             createjs.Ticker.addEventListener("tick", tick);
+
+            window.onresize = function() {
+                resize(ow, oh, true);
+            }
         }
 
-        function draw(circle, maxRadius) {
+        function draw(face, maxRadius) {
             var start = 0;
             var end = 0.3333;
             var radius = maxRadius * 0.95;
@@ -55,10 +60,8 @@
             var h = radius;
             var hue = 180;
             for (var i=0; i < 32; i++) {
-//                console.log("looping");
-
                 // TODO use hue to rgb conversion instead
-                circle.addCell({radius: h -= layerHeight, height: layerHeight * 1.6, start: start, end: end,
+                face.addSector({radius: h -= layerHeight, height: layerHeight * 1.6, start: start, end: end,
                     color: "rgb(" + Math.trunc(hue/1.3) + ", 44, " + (255 - Math.trunc(hue/1.8)) + ")",
                     alpha: 0.9,
                     rotateRate: 10 - hue/20});
@@ -67,10 +70,37 @@
             }
         }
 
+        function resize(ow, oh, keepAspectRatio) {
+            // browser viewport size
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+
+            if (keepAspectRatio) {
+                // keep aspect ratio
+                var scale = Math.min(w / ow, h / oh);
+                stage.scaleX = scale;
+                stage.scaleY = scale;
+
+                // adjust canvas size
+                stage.canvas.width = ow * scale;
+                stage.canvas.height = oh * scale;
+            } else { // scale to exact fit
+                stage.scaleX = w / ow;
+                stage.scaleY = h / oh;
+
+                // adjust canvas size
+                stage.canvas.width = ow * stage.scaleX;
+                stage.canvas.height = oh * stage.scaleY;
+            }
+
+            // update the stage
+            stage.update()
+        }
+
         function tick(event) {
 
             if (animate) {
-                circle.update();
+                face.update();
 
                 stage.update(event);
             }
