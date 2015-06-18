@@ -53,17 +53,13 @@ CircularGraphics.prototype.update = function() {
 var LayeredCircle = function (x, y, maxRadius) {
     CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
-    this.rows = [];
 };
 
 LayeredCircle.prototype = Object.create(CircularGraphics.prototype);
 LayeredCircle.prototype.constructor = LayeredCircle;
 
 LayeredCircle.prototype.addLayers = function(rows) {
-    this.rows.push(rows);
-};
-
-LayeredCircle.prototype.drawLayers = function(rows) {
+    console.log('drawing ' + rows.length + ' layers');
     var gap = Math.floor(this.maxRadius / 100);
     var height = Math.floor((this.maxRadius - ((rows.length) * gap)) / (rows.length));
 
@@ -90,18 +86,6 @@ LayeredCircle.prototype.drawLayers = function(rows) {
 
     this.addSectors(cells);
 };
-
-LayeredCircle.prototype.draw = function() {
-    console.log("drawing layers");
-    this.drawLayers(this.rows);
-};
-
-// TODO redraw everything?
-//LayeredCircle.prototype.update = function() {
-////    console.log("circle updating");
-////   TODO call super
-//};
-
 
 
 var Clock = function (x, y, maxRadius) {

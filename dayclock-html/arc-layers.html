@@ -29,10 +29,9 @@
             // more accurately, distance from xy and edge?
             var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
 
-            var container = new createjs.Container();
-            stage.addChild(container);
-
-            face = new LayeredCircle(container, xCenter, yCenter, maxRadius);
+            face = new LayeredCircle(xCenter, yCenter, maxRadius);
+            console.log(face);
+            stage.addChild(face);
             draw(face);
 
             createjs.Ticker.addEventListener("tick", tick);
