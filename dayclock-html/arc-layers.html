@@ -7,6 +7,8 @@
     <style>
         body {
             background: #000000;
+            padding: 0;
+            margin: 0;
         }
 
         /*horizontally center the canvas*/
@@ -24,6 +26,8 @@
             canvas = document.getElementById("demoCanvas");
             stage = new createjs.Stage(canvas);
 
+            var ow = canvas.width;
+            var oh = canvas.height;
             var xCenter = canvas.width / 2;
             var yCenter = canvas.height / 2;
             // more accurately, distance from xy and edge?
@@ -33,8 +37,40 @@
             console.log(face);
             stage.addChild(face);
             draw(face);
+            resize(ow, oh, true);
 
             createjs.Ticker.addEventListener("tick", tick);
+
+            window.onresize = function() {
+                resize(ow, oh, true);
+            }
+        }
+
+        function resize(ow, oh, keepAspectRatio) {
+            // browser viewport size
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+
+            if (keepAspectRatio) {
+                // keep aspect ratio
+                var scale = Math.min(w / ow, h / oh);
+                stage.scaleX = scale;
+                stage.scaleY = scale;
+
+                // adjust canvas size
+                stage.canvas.width = ow * scale;
+                stage.canvas.height = oh * scale;
+            } else { // scale to exact fit
+                stage.scaleX = w / ow;
+                stage.scaleY = h / oh;
+
+                // adjust canvas size
+                stage.canvas.width = ow * stage.scaleX;
+                stage.canvas.height = oh * stage.scaleY;
+            }
+
+            // update the stage
+            stage.update()
         }
 
         function draw(face) {
