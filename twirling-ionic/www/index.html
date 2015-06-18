@@ -4,31 +4,117 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="js/createjs-2015.05.21.min.js"></script>
+    <script src="js/dayclock.js"></script>
+    <style>
+        body {
+            background: #000000;
+            padding: 0;
+            margin: 0;
+        }
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+        /*horizontally center the canvas*/
+        #demoCanvas {
+            display: block;
+            margin: 0 auto;
+            /*background: #222222;*/
+        }
+    </style>
+    <script>
+        var stage;
+        var circle;
+        var animate = true;
+        var rotateFactor = 1;
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
+        function init() {
+            var canvas = document.getElementById("demoCanvas");
+            console.log("canvas.width " + canvas.width);
+            console.log("canvas.height " + canvas.height);
+            canvas.width = document.body.clientWidth; //document.width is obsolete
+            canvas.height = document.body.clientHeight; //document.height is obsolete
 
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+            stage = new createjs.Stage(canvas);
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+            var xCenter = canvas.width / 2;
+            var yCenter = canvas.height / 2;
+            var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
+            console.log("maxRadius " + maxRadius);
 
-    <!-- your app's js -->
-    <script src="js/app.js"></script>
+            var container = new createjs.Container();
+            stage.addChild(container);
+
+            circle = new Circle(container, xCenter, yCenter);
+            draw(circle, maxRadius);
+
+            createjs.Ticker.addEventListener("tick", tick);
+
+//            window.onresize = function() {
+//                resize(ow, oh, true);
+//            }
+        }
+
+        function resize(ow, oh, keepAspectRatio) {
+            // browser viewport size
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+
+            if (keepAspectRatio) {
+                // keep aspect ratio
+                var scale = Math.min(w / ow, h / oh);
+                stage.scaleX = scale;
+                stage.scaleY = scale;
+
+                // adjust canvas size
+                stage.canvas.width = ow * scale;
+                stage.canvas.height = oh * scale;
+            } else { // scale to exact fit
+                stage.scaleX = w / ow;
+                stage.scaleY = h / oh;
+
+                // adjust canvas size
+                stage.canvas.width = ow * stage.scaleX;
+                stage.canvas.height = oh * stage.scaleY;
+            }
+
+            // update the stage
+            stage.update()
+        }
+
+        function draw(circle, maxRadius) {
+            var start = 0;
+            var end = 0.3333;
+            var radius = maxRadius * 0.95;
+            var layerHeight = radius / 36;
+
+            var h = radius;
+            var hue = 180;
+            for (var i=0; i < 32; i++) {
+//                console.log("looping");
+
+                // TODO use hue to rgb conversion instead
+                circle.addCell({radius: h -= layerHeight, height: layerHeight * 1.6, start: start, end: end,
+                    color: "rgb(" + Math.trunc(hue/1.3) + ", 44, " + (255 - Math.trunc(hue/1.8)) + ")",
+                    alpha: 0.9,
+                    rotateRate: 10 - hue/20});
+
+                hue -= 5;
+            }
+        }
+
+        function tick(event) {
+
+            if (animate) {
+                circle.update();
+
+                stage.update(event);
+            }
+        }
+
+    </script>
   </head>
-  <body ng-app="starter">
+  <body onload="init();">
+    <canvas id="demoCanvas"></canvas>
 
-    <ion-pane>
-      <ion-header-bar class="bar-stable">
-        <h1 class="title">Ionic Blank Starter</h1>
-      </ion-header-bar>
-      <ion-content>
-      </ion-content>
-    </ion-pane>
   </body>
 </html>
