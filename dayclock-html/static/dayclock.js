@@ -99,10 +99,16 @@ var Clock = function (x, y, maxRadius) {
     this.midnight = time(0,0);
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
     this.centerColor = "DeepSkyBlue";
+    this.activities = [];
 };
 
 Clock.prototype = Object.create(LayeredCircle.prototype);
 Clock.prototype.constructor = Clock;
+
+Clock.prototype.setActivities = function(activities) {
+    this.activities = activities;
+    console.log(this.activities);
+};
 
 Clock.prototype.drawTimePeriods = function(activities) {
     // for now every activity has its own layer - later, merge ones that don't overlap.
@@ -156,6 +162,9 @@ Clock.prototype.drawTimeAndDate = function() {
     time.y = this.yCenter - 24;
     this.addChild(time);
 
+//    var text = new createjs.Text("Your Text Here", "24px Arial");
+//    text.x = containerWidth/2 - text.getBounds().width/2;
+
     var date = new createjs.Text(moment().format('ddd, MMM Do'), "14px Arial", "#ffffff");
     date.textAlign = "center";
     date.x = this.xCenter;
@@ -165,6 +174,8 @@ Clock.prototype.drawTimeAndDate = function() {
 
 Clock.prototype.update = function() {
     console.log("clock updating");
+    this.removeAllChildren();
+    this.drawTimePeriods(this.activities);
     this.removeChild(this.getChildByName("__shadow"));
     this.drawTimePassedShadow();
     this.drawTimeAndDate();
