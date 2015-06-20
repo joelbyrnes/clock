@@ -53,6 +53,7 @@ CircularGraphics.prototype.update = function() {
 var LayeredCircle = function (x, y, maxRadius) {
     CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
+    this.minRadius = 0;
 };
 
 LayeredCircle.prototype = Object.create(CircularGraphics.prototype);
@@ -60,13 +61,12 @@ LayeredCircle.prototype.constructor = LayeredCircle;
 
 LayeredCircle.prototype.addLayers = function(rows) {
     console.log('drawing ' + rows.length + ' layers');
-    var gap = Math.floor(this.maxRadius / 100);
-    var height = Math.floor((this.maxRadius - ((rows.length) * gap)) / (rows.length));
+    var gap = this.maxRadius / 100;
+    var height = (this.maxRadius - this.minRadius - ((rows.length) * gap)) / (rows.length);
 
     var cells = [];
 
     for (var r=0; r < rows.length; r++) {
-        console.log("adding layer " + r);
         var row = rows[r];
         var rad = (this.maxRadius - ((height + gap) * (r + 1)));
 
@@ -94,8 +94,8 @@ function time(hour, min) {
 
 
 var Clock = function (x, y, maxRadius) {
-    LayeredCircle.call(this, x, y);
-    this.maxRadius = maxRadius;
+    LayeredCircle.call(this, x, y, maxRadius);
+    this.minRadius = maxRadius / 4;
     this.midnight = time(0,0);
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
     this.centerColor = "DeepSkyBlue";
@@ -117,9 +117,9 @@ Clock.prototype.drawTimePeriods = function(activities) {
 
     for (var i=0; i < activities.length; i++) {
         console.log("adding activity " + i);
-        var cell = this.createActivityCell(activities[i]);
-        console.log(cell);
-        layers.push([cell]);
+        var sector = this.calculateSector(activities[i]);
+        console.log(sector);
+        layers.push([sector]);
     }
 
     // outer ring
@@ -129,28 +129,30 @@ Clock.prototype.drawTimePeriods = function(activities) {
 };
 
 // effectively turns times into start and end positions
-Clock.prototype.createActivityCell = function(act) {
-    // adjust the rendering so midnight is at the top
-    var start = ((act.start - this.midnight) / this.millis24hour) - 0.25;
-    var end =  ((act.end - this.midnight) / this.millis24hour) - 0.25;
+Clock.prototype.calculateSector = function(act) {
+    // lazy copy - TODO fix
+    var period = JSON.parse(JSON.stringify(act));
 
-    return {name: act.name, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
+    // adjust the rendering so midnight is at the top
+    // TODO what is the 0.25??
+    period.start = ((act.start - this.midnight) / this.millis24hour) - 0.25;
+    period.end = ((act.end - this.midnight) / this.millis24hour) - 0.25;
+
+    return period;
 };
 
 Clock.prototype.drawTimePassedShadow = function() {
     var shadow = {name: "__shadow", start: this.midnight, end: moment(), color: "#000000", alpha: 0.5};
-    var cell = this.createActivityCell(shadow);
-    cell.height = this.maxRadius;
-    cell.radius = 10;
-//    console.log("shadow ");
-//    console.log(cell);
+    var cell = this.calculateSector(shadow);
+    cell.height = this.maxRadius - this.minRadius;
+    cell.radius = this.minRadius;
     var cellShape = this.sectorShape(cell);
     this.addChild(cellShape);
 };
 
 Clock.prototype.drawTimeAndDate = function() {
     var circle = new createjs.Shape();
-    circle.graphics.beginFill(this.centerColor).drawCircle(0, 0, 50);
+    circle.graphics.beginFill(this.centerColor).drawCircle(0, 0, this.minRadius);
     circle.x = this.xCenter;
     circle.y = this.yCenter;
     this.addChild(circle);
