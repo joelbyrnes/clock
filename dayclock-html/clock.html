@@ -16,7 +16,6 @@
         #clockCanvas {
             display: block;
             margin: 0 auto;
-            background: #222222;
         }
     </style>
     <script>
@@ -35,6 +34,10 @@
 
             clock = new Clock(xCenter, yCenter, maxRadius);
             stage.addChild(clock);
+
+            clock.bgColor = "#222222";
+            canvas.style.background = clock.bgColor;
+            clock.centerColor = clock.bgColor;
 
             draw(clock);
 
