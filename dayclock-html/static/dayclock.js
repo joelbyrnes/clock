@@ -54,6 +54,7 @@ var LayeredCircle = function (x, y, maxRadius) {
     CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
     this.minRadius = 0;
+    this.gap = this.maxRadius / 100;
 };
 
 LayeredCircle.prototype = Object.create(CircularGraphics.prototype);
@@ -61,14 +62,13 @@ LayeredCircle.prototype.constructor = LayeredCircle;
 
 LayeredCircle.prototype.addLayers = function(rows) {
     console.log('drawing ' + rows.length + ' layers');
-    var gap = this.maxRadius / 100;
-    var height = (this.maxRadius - this.minRadius - ((rows.length) * gap)) / (rows.length);
+    var height = (this.maxRadius - this.minRadius - ((rows.length) * this.gap)) / (rows.length);
 
     var cells = [];
 
     for (var r=0; r < rows.length; r++) {
         var row = rows[r];
-        var rad = (this.maxRadius - ((height + gap) * (r + 1)));
+        var rad = (this.maxRadius - ((height + this.gap) * (r + 1)));
 
         for (var c=0; c < row.length; c++) {
             var cell = row[c];
@@ -98,7 +98,7 @@ var Clock = function (x, y, maxRadius) {
     this.minRadius = maxRadius / 4;
     this.midnight = time(0,0);
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
-    this.centerColor = "DeepSkyBlue";
+    this.centerColor = "#000000";
     this.activities = [];
 };
 
@@ -157,17 +157,15 @@ Clock.prototype.drawTimeAndDate = function() {
     circle.y = this.yCenter;
     this.addChild(circle);
 
-    var time = new createjs.Text(moment().format('H:mm'), "24px Arial", "#ffffff");
+    // based on radius 200, a good size is 30px
+    var timeSize = this.maxRadius / 7.5;
+    var time = new createjs.Text(moment().format('H:mm'), timeSize + "px Arial", "#ffffff");
     time.textAlign = "center";
-//    time.verticalAlign = "text-top";
     time.x = this.xCenter;
-    time.y = this.yCenter - 24;
+    time.y = this.yCenter - timeSize - this.gap;
     this.addChild(time);
 
-//    var text = new createjs.Text("Your Text Here", "24px Arial");
-//    text.x = containerWidth/2 - text.getBounds().width/2;
-
-    var date = new createjs.Text(moment().format('ddd, MMM Do'), "14px Arial", "#ffffff");
+    var date = new createjs.Text(moment().format('ddd, MMM Do'), timeSize/2 + "px Arial", "#ffffff");
     date.textAlign = "center";
     date.x = this.xCenter;
     date.y = this.yCenter;
