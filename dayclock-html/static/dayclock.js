@@ -88,9 +88,17 @@ LayeredCircle.prototype.addLayers = function(rows) {
 };
 
 
+function time(hour, min) {
+    return moment({hour: hour, minute: min});
+}
+
+
 var Clock = function (x, y, maxRadius) {
     LayeredCircle.call(this, x, y);
     this.maxRadius = maxRadius;
+    this.midnight = time(0,0);
+    this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
+    this.centerColor = "DeepSkyBlue";
 };
 
 Clock.prototype = Object.create(LayeredCircle.prototype);
@@ -117,14 +125,14 @@ Clock.prototype.drawTimePeriods = function(activities) {
 // effectively turns times into start and end positions
 Clock.prototype.createActivityCell = function(act) {
     // adjust the rendering so midnight is at the top
-    var start = ((act.start - midnight) / millis24hour) - 0.25;
-    var end =  ((act.end - midnight) / millis24hour) - 0.25;
+    var start = ((act.start - this.midnight) / this.millis24hour) - 0.25;
+    var end =  ((act.end - this.midnight) / this.millis24hour) - 0.25;
 
     return {name: act.name, start: start, end: end, color: act.color, alpha: act.alpha, rotateRate: act.rotateRate};
 };
 
 Clock.prototype.drawTimePassedShadow = function() {
-    var shadow = {name: "__shadow", start: midnight, end: moment(), color: "#000000", alpha: 0.5};
+    var shadow = {name: "__shadow", start: this.midnight, end: moment(), color: "#000000", alpha: 0.5};
     var cell = this.createActivityCell(shadow);
     cell.height = this.maxRadius;
     cell.radius = 10;
@@ -134,8 +142,30 @@ Clock.prototype.drawTimePassedShadow = function() {
     this.addChild(cellShape);
 };
 
+Clock.prototype.drawTimeAndDate = function() {
+    var circle = new createjs.Shape();
+    circle.graphics.beginFill(this.centerColor).drawCircle(0, 0, 50);
+    circle.x = this.xCenter;
+    circle.y = this.yCenter;
+    this.addChild(circle);
+
+    var time = new createjs.Text(moment().format('H:mm'), "24px Arial", "#ffffff");
+    time.textAlign = "center";
+//    time.verticalAlign = "text-top";
+    time.x = this.xCenter;
+    time.y = this.yCenter - 24;
+    this.addChild(time);
+
+    var date = new createjs.Text(moment().format('ddd, MMM Do'), "14px Arial", "#ffffff");
+    date.textAlign = "center";
+    date.x = this.xCenter;
+    date.y = this.yCenter;
+    this.addChild(date);
+};
+
 Clock.prototype.update = function() {
     console.log("clock updating");
     this.removeChild(this.getChildByName("__shadow"));
     this.drawTimePassedShadow();
+    this.drawTimeAndDate();
 };

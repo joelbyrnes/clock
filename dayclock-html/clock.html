@@ -12,7 +12,7 @@
         }
 
         /*horizontally center the canvas*/
-        #demoCanvas {
+        #clockCanvas {
             display: block;
             margin: 0 auto;
             background: #222222;
@@ -22,13 +22,9 @@
         var canvas, stage;
         var clock;
         var animate = true;
-        var rotateFactor = 1;
-
-        var midnight = time(0,0);
-        var millis24hour = 24 * 60 * 60 * 1000;
 
         function init() {
-            canvas = document.getElementById("demoCanvas");
+            canvas = document.getElementById("clockCanvas");
             stage = new createjs.Stage(canvas);
 
             var xCenter = canvas.width / 2;
@@ -61,11 +57,7 @@
 
             clock.drawTimePeriods(activities);
 
-            clock.drawTimePassedShadow();
-        }
-
-        function time(hour, min) {
-            return moment({hour: hour, minute: min});
+            clock.update();
         }
 
         function tick(event) {
@@ -79,6 +71,6 @@
     </script>
 </head>
 <body onload="init();">
-<canvas id="demoCanvas" width="400" height="400"></canvas>
+<canvas id="clockCanvas" width="400" height="400"></canvas>
 </body>
 </html>
