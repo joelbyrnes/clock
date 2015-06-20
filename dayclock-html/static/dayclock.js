@@ -50,6 +50,24 @@ CircularGraphics.prototype.update = function() {
 };
 
 
+var Layer = function(row) {
+    this.row = row
+};
+
+Layer.prototype.maxHeight = function() {
+    var maxHeight = 0;
+
+    for (var c=0; c < this.row.length; c++) {
+        var cell = this.row[c];
+
+        if (cell.height && cell.height > maxHeight) {
+            maxHeight = cell.height;
+        }
+    }
+    return maxHeight;
+};
+
+
 var LayeredCircle = function (x, y, maxRadius) {
     CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
@@ -74,8 +92,10 @@ LayeredCircle.prototype.addLayers = function(rows) {
             var cell = row[c];
             var h = (cell.height || 1) * height;
 
-            var data = {name: cell.name, radius: rad, height: h, start: cell.start, end: cell.end,
-                color: cell.color, alpha: cell.alpha, rotateRate:cell.rotateRate};
+            // lazy copy - TODO fix
+            var data = JSON.parse(JSON.stringify(cell));
+            data.radius = rad;
+            data.height = h;
             cells.push(data);
 
             console.log("adding layer " + r + ", cell " + c);
