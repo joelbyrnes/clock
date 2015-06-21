@@ -1,4 +1,31 @@
 
+function resizeStage(stage, ow, oh, keepAspectRatio) {
+    // browser viewport size
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+
+    if (keepAspectRatio) {
+        // keep aspect ratio
+        var scale = Math.min(w / ow, h / oh);
+        stage.scaleX = scale;
+        stage.scaleY = scale;
+
+        // adjust canvas size
+        stage.canvas.width = ow * scale;
+        stage.canvas.height = oh * scale;
+    } else { // scale to exact fit
+        stage.scaleX = w / ow;
+        stage.scaleY = h / oh;
+
+        // adjust canvas size
+        stage.canvas.width = ow * stage.scaleX;
+        stage.canvas.height = oh * stage.scaleY;
+    }
+
+    // update the stage
+    stage.update()
+}
+
 var CircularGraphics = function (x, y) {
     createjs.Container.call(this);
     this.xCenter = x;
@@ -65,7 +92,7 @@ CircularGraphics.prototype.addSectors = function(cells) {
     }
 };
 
-CircularGraphics.prototype.update = function() {
+CircularGraphics.prototype.update = function(event) {
 //    console.log("circle updating");
     for (var i=0; i < this.numChildren; i++) {
         var child = this.getChildAt(i);
@@ -147,6 +174,7 @@ var Clock = function (x, y, maxRadius) {
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
     this.bgColor = "#000000";
     this.centerColor = this.bgColor;
+    this.shadowAlpha = 0.65;
     this.activities = [];
 };
 
@@ -206,7 +234,7 @@ Clock.prototype.drawSpoke = function(position, color) {
 };
 
 Clock.prototype.drawTimePassedShadow = function() {
-    var shadow = {name: "__shadow", start: this.midnight, end: moment(), color: "#000000", alpha: 0.5};
+    var shadow = {name: "__shadow", start: this.midnight, end: moment(), color: "#000000", alpha: this.shadowAlpha};
     var cell = this.calculateSector(shadow);
     cell.height = this.maxRadius - this.minRadius;
     cell.radius = this.minRadius;
@@ -236,8 +264,10 @@ Clock.prototype.drawTimeAndDate = function() {
     this.addChild(date);
 };
 
-Clock.prototype.update = function() {
+Clock.prototype.update = function(event) {
     console.log("clock updating");
+    // ensure midnight is set to today, so when the clock ticks over the shadow disappears
+    this.midnight = time(0,0);
     this.removeAllChildren();
     this.drawTimePeriods(this.activities);
     this.drawSegmentBreaks();

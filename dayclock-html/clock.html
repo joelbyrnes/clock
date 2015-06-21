@@ -1,6 +1,7 @@
 <html>
 <head>
-    <title>Circular graphics</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Day Clock</title>
     <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
     <script src="static/createjs-2015.05.21.min.js"></script>
     <script src="static/dayclock.js"></script>
@@ -10,6 +11,8 @@
     <style>
         body {
             background: #000000;
+            padding: 0;
+            margin: 0;
         }
 
         /*horizontally center the canvas*/
@@ -19,33 +22,43 @@
         }
     </style>
     <script>
-        var canvas, stage;
-        var clock;
+        var stage, clock;
         var animate = true;
 
         function init() {
             canvas = document.getElementById("clockCanvas");
+            canvas.width = document.body.clientWidth; //document.width is obsolete
+            canvas.height = document.body.clientHeight; //document.height is obsolete
+
             stage = new createjs.Stage(canvas);
 
-            var xCenter = canvas.width / 2;
-            var yCenter = canvas.height / 2;
+            var ow = window.innerWidth;
+            var oh = window.innerHeight;
+            var xCenter = ow / 2;
+            var yCenter = oh / 2;
             // more accurately, distance from xy and edge?
-            var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
+            var maxRadius = Math.floor(Math.min(ow / 2, oh / 2));
 
             clock = new Clock(xCenter, yCenter, maxRadius);
             stage.addChild(clock);
 
-            clock.bgColor = "#222222";
+//            clock.bgColor = "#222222";
             canvas.style.background = clock.bgColor;
             clock.centerColor = clock.bgColor;
 
             draw(clock);
+            resizeStage(stage, ow, oh, true);
 
             // redraw every 1s
             createjs.Ticker.setFPS(1);
             createjs.Ticker.addEventListener("tick", tick);
 
             stage.update();
+
+            window.onresize = function() {
+                console.log("resizing");
+                resizeStage(stage, ow, oh, true);
+            }
         }
 
         function draw(clock) {
@@ -58,7 +71,7 @@
 
         function tick(event) {
             if (animate) {
-                clock.update();
+                clock.update(event);
             }
 
             stage.update(event);
@@ -67,6 +80,6 @@
     </script>
 </head>
 <body onload="init();">
-<canvas id="clockCanvas" width="400" height="400"></canvas>
+<canvas id="clockCanvas"></canvas>
 </body>
 </html>
