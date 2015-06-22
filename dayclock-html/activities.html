@@ -1,0 +1,82 @@
+<html>
+<head>
+    <title>Data Storage</title>
+    <script src="static/moment.js"></script>
+
+    <script>
+        function time(hour, min) {
+            return moment({hour: hour, minute: min});
+        }
+
+        function date(year, month, day) {
+            return moment({hour: hour, minute: min});
+        }
+
+        function init() {
+            // Store
+//            console.log(activities);
+            localStorage.setItem("activities.json", JSON.stringify(activities));
+            // Retrieve
+//            console.log(JSON.parse(localStorage.getItem("activities.json")));
+//            console.log(JSON.parse(localStorage.getItem("activities.json"))[0]);
+
+
+            localStorage.setItem("foo", "bar");
+
+//            console.log(localStorage.key(""));
+
+            var day = moment().startOf('day');
+            var localeData = moment.localeData();
+
+            var weekActivities = {
+                0: [],
+                1: [
+                    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                    {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"}
+                ],
+                2: [
+                    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                    {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"}
+                ],
+                3: [
+                    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                    {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"}
+                ],
+                4: [
+                    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                    {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"}
+                ],
+                5: [
+                    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+                    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+                    {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"}
+                ],
+                6: []
+            };
+
+
+            for (var d=0; d < 20; d++) {
+//                console.log(d);
+                console.log(day.format());
+                console.log(localeData.weekdays(day));
+                console.log(day.day());
+                console.log(weekActivities[day.day()]);
+                day.add(1, 'days');
+            }
+
+
+        }
+
+    </script>
+
+    <script src="static/clockdata.js"></script>
+
+</head>
+<body onload="init();">
+
+</body>
+</html>
