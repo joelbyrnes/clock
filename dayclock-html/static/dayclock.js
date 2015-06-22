@@ -162,15 +162,15 @@ LayeredCircle.prototype.addLayers = function(rows, maxRadius, minRadius) {
 };
 
 
-function time(hour, min) {
-    return moment({hour: hour, minute: min});
+function midnightToday() {
+    return moment().startOf('day');
 }
 
 
 var Clock = function (x, y, maxRadius) {
     LayeredCircle.call(this, x, y, maxRadius);
     this.minRadius = maxRadius / 4;
-    this.midnight = time(0,0);
+    this.midnight = midnightToday();
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
     this.bgColor = "#000000";
     this.centerColor = this.bgColor;
@@ -181,9 +181,8 @@ var Clock = function (x, y, maxRadius) {
 Clock.prototype = Object.create(LayeredCircle.prototype);
 Clock.prototype.constructor = Clock;
 
-Clock.prototype.setActivities = function(activities) {
-    this.activities = activities;
-    console.log(this.activities);
+Clock.prototype.addActivities = function(activities) {
+    this.activities = this.activities.concat(activities);
 };
 
 Clock.prototype.drawTimePeriods = function(activities) {
@@ -264,12 +263,29 @@ Clock.prototype.drawTimeAndDate = function() {
     this.addChild(date);
 };
 
+Clock.prototype.todayActivities = function(activities) {
+    var today = [];
+
+    for (var i=0; i < activities.length; i++) {
+        var act = activities[i];
+        // start of event is after midnight and before next midnight
+        // TODO what about ending tomorrow, or starting yesterday ending today?
+        if ((act.start >= this.midnight) &&
+                (act.start < (this.midnight + this.millis24hour))) {
+            today.push(act);
+        }
+    }
+
+    return today;
+};
+
 Clock.prototype.update = function(event) {
     console.log("clock updating");
     // ensure midnight is set to today, so when the clock ticks over the shadow disappears
-    this.midnight = time(0,0);
+    this.midnight = midnightToday();
     this.removeAllChildren();
-    this.drawTimePeriods(this.activities);
+//    console.log(this.todayActivities(this.activities));
+    this.drawTimePeriods(this.todayActivities(this.activities));
     this.drawSegmentBreaks();
     this.drawTimePassedShadow();
     this.drawTimeAndDate();

@@ -1,9 +1,13 @@
 
+function time(hour, min) {
+    return moment({hour: hour, minute: min});
+}
+
 var normal = [
-    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
-    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+    {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange", days: [1,2,3,4,5]},
+    {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue", days: [1,2,3,4,5]},
     {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"},
-    {},
+    {name: "tomorrow", start: time(42, 30), end: time(46, 30), color: "yellow"},
 //    {},
 //    {}
 ];
