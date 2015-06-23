@@ -139,7 +139,7 @@ LayeredCircle.prototype.addLayers = function(rows, maxRadius, minRadius) {
     maxRadius = maxRadius || this.maxRadius;
     minRadius = minRadius || this.minRadius;
 
-    console.log('drawing ' + rows.length + ' layers');
+//    console.log('drawing ' + rows.length + ' layers');
     var height = (maxRadius - minRadius - ((rows.length) * this.gap)) / (rows.length);
 
     var cells = [];
@@ -157,8 +157,8 @@ LayeredCircle.prototype.addLayers = function(rows, maxRadius, minRadius) {
             data.height = h;
             cells.push(data);
 
-            console.log("adding layer " + r + ", cell " + c);
-            console.log(data);
+//            console.log("adding layer " + r + ", cell " + c);
+//            console.log(data);
         }
 
     }
@@ -194,15 +194,14 @@ Clock.prototype.drawTimePeriods = function(activities) {
     // for now every activity has its own layer - later, merge ones that don't overlap.
 
     // outer ring
-    console.log("add ring");
     this.addSector({name: "__outer", radius:this.maxRadius-this.gap*3, height: this.gap * 2, start: 0, end: 1, color: "rgb(0, 255, 0)", alpha: 210});
 
     var layers = [];
 
     for (var i=0; i < activities.length; i++) {
-        console.log("adding activity " + i);
+//        console.log("adding activity " + i);
+        console.log(activities[i]);
         var sector = this.calculateSector(activities[i]);
-        console.log(sector);
         layers.push([sector]);
     }
 
@@ -236,8 +235,8 @@ Clock.prototype.drawSpoke = function(position, color) {
     this.addChild(this.arcShape({radius: this.maxRadius, start: position - 0.0018, end: position + 0.0018, color: color, xalpha: 0.5}));
 };
 
-Clock.prototype.drawTimePassedShadow = function() {
-    var shadow = {name: "__shadow", start: this.midnight, end: moment(), color: "#000000", alpha: this.shadowAlpha};
+Clock.prototype.drawTimePassedShadow = function(time) {
+    var shadow = {name: "__shadow", start: moment(time).startOf('day'), end: time, color: "#000000", alpha: this.shadowAlpha};
     var cell = this.calculateSector(shadow);
     cell.height = this.maxRadius - this.minRadius;
     cell.radius = this.minRadius;
@@ -245,7 +244,8 @@ Clock.prototype.drawTimePassedShadow = function() {
     this.addChild(cellShape);
 };
 
-Clock.prototype.drawTimeAndDate = function() {
+Clock.prototype.drawTimeAndDate = function(theTime) {
+    var showTime = moment(theTime);
     var circle = new createjs.Shape();
     circle.graphics.beginFill(this.centerColor).drawCircle(0, 0, this.minRadius);
     circle.x = this.xCenter;
@@ -254,43 +254,33 @@ Clock.prototype.drawTimeAndDate = function() {
 
     // aesthetic values for ratios
     var timeSize = this.minRadius / 1.8;
-    var time = new createjs.Text(moment().format('H:mm'), timeSize + "px Arial", "#ffffff");
+    var time = new createjs.Text(showTime.format('H:mm'), timeSize + "px Arial", "#ffffff");
     time.textAlign = "center";
     time.x = this.xCenter;
     time.y = this.yCenter - timeSize;
     this.addChild(time);
 
-    var date = new createjs.Text(moment().format('ddd, MMM Do'), timeSize/2.2 + "px Arial", "#ffffff");
+    var date = new createjs.Text(showTime.format('ddd, MMM Do'), timeSize/2.2 + "px Arial", "#ffffff");
     date.textAlign = "center";
     date.x = this.xCenter;
     date.y = this.yCenter + this.gap;
     this.addChild(date);
 };
 
-Clock.prototype.todayActivities = function(activities) {
-    var today = [];
-
-    for (var i=0; i < activities.length; i++) {
-        var act = activities[i];
-        // start of event is after midnight and before next midnight
-        // TODO what about ending tomorrow, or starting yesterday ending today?
-        if ((act.start >= this.midnight) &&
-                (act.start < (this.midnight + this.millis24hour))) {
-            today.push(act);
-        }
-    }
-
-    return today;
+Clock.prototype.update = function(event) {
+    // use current time
+    this.showTime(moment());
 };
 
-Clock.prototype.update = function(event) {
-    console.log("clock updating");
-    // ensure midnight is set to today, so when the clock ticks over the shadow disappears
-    this.midnight = midnightToday();
+Clock.prototype.showTime = function(time) {
+    console.log("showing time " + time.format());
+    console.log(moment.localeData().weekdays(time));
+
+    // ensure midnight is set to today, so when the clock ticks over the shadow disappears and activities are correct
+    this.midnight = moment(time).startOf('day');
     this.removeAllChildren();
-//    console.log(this.todayActivities(this.activities));
     this.drawTimePeriods(this.activities.forDate(this.midnight));
     this.drawSegmentBreaks();
-    this.drawTimePassedShadow();
-    this.drawTimeAndDate();
+    this.drawTimePassedShadow(time);
+    this.drawTimeAndDate(time);
 };
