@@ -101,6 +101,7 @@ CircularGraphics.prototype.update = function(event) {
 };
 
 
+// TODO use this
 var Layer = function(row) {
     this.row = row
 };
@@ -169,7 +170,7 @@ function midnightToday() {
 
 var Clock = function (x, y, maxRadius) {
     LayeredCircle.call(this, x, y, maxRadius);
-    this.minRadius = maxRadius / 4;
+    this.minRadius = maxRadius / 3;
     this.midnight = midnightToday();
     this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
     this.bgColor = "#000000";
@@ -248,15 +249,15 @@ Clock.prototype.drawTimeAndDate = function() {
     circle.y = this.yCenter;
     this.addChild(circle);
 
-    // based on radius 200, a good size is 30px
-    var timeSize = this.maxRadius / 7.5;
+    // aesthetic values for ratios
+    var timeSize = this.minRadius / 1.8;
     var time = new createjs.Text(moment().format('H:mm'), timeSize + "px Arial", "#ffffff");
     time.textAlign = "center";
     time.x = this.xCenter;
     time.y = this.yCenter - timeSize;
     this.addChild(time);
 
-    var date = new createjs.Text(moment().format('ddd, MMM Do'), timeSize/2 + "px Arial", "#ffffff");
+    var date = new createjs.Text(moment().format('ddd, MMM Do'), timeSize/2.2 + "px Arial", "#ffffff");
     date.textAlign = "center";
     date.x = this.xCenter;
     date.y = this.yCenter + this.gap;
