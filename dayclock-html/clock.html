@@ -69,9 +69,13 @@
             clock.update();
         }
 
+        // zero-start months
+        var increasingTime = moment({year: 2015, month: 5, day: 25}); //.startOf('day');
+
         function tick(event) {
             if (animate) {
                 clock.update(event);
+//                clock.showTime(increasingTime.add(10, 'minutes'));
             }
 
             stage.update(event);
