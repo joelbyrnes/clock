@@ -12,8 +12,30 @@
         }
 
         function date(year, month, day) {
-            return moment({year: hour, month: month, day: day});
+            return moment({year: year, month: month, day: day});
         }
+
+        var normal = [
+            {name: "work",  start: time(9, 30),  end: time(18, 0),  color: "orange"},
+            {name: "sleep", start: time(0, 0),   end: time(7, 30),  color: "blue"},
+            {name: "foo",   start: time(16, 30), end: time(24, 30), color: "green"},
+            {name: "tomorrow", start: time(42, 30), end: time(46, 30), color: "yellow"},
+        ];
+
+        var test = [
+            {name: "a",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "b",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "c",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "d",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "e",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "f",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "g",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "h",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "i",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+            {name: "j",  start: time(1, 0),  end: time(23, 0),  color: "orange"},
+        ];
+
+        var activities = normal;
 
         function init() {
             // Store
@@ -31,13 +53,12 @@
             var day = moment().startOf('day');
             var localeData = moment.localeData();
 
+            var actObj = new Activities(weeklyActivities);
+
             for (var d=0; d < 14; d++) {
-//                console.log(d);
                 console.log(day.format());
                 console.log(localeData.weekdays(day));
-//                console.log(day.day());
-//                console.log(weekActivities[day.day()]);
-                console.log(activitiesForDate(day));
+                console.log(actObj.activitiesForDate(day));
                 day.add(1, 'days');
             }
 

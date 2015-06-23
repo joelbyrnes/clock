@@ -64,7 +64,7 @@
         function draw(clock) {
             // from clockdata.js
 
-            clock.addActivities(activities);
+            clock.setActivities(new Activities(weeklyActivities));
 
             clock.update();
         }

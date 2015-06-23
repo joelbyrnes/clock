@@ -26,16 +26,16 @@ function resizeStage(stage, ow, oh, keepAspectRatio) {
     stage.update()
 }
 
+// lazy copy - TODO fix
+function copy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 var CircularGraphics = function (x, y) {
     createjs.Container.call(this);
     this.xCenter = x;
     this.yCenter = y;
 };
-
-// lazy copy - TODO fix
-function copy(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
 
 CircularGraphics.prototype = Object.create(createjs.Container.prototype);
 CircularGraphics.prototype.constructor = CircularGraphics;
@@ -180,14 +180,14 @@ var Clock = function (x, y, maxRadius) {
     this.bgColor = "#000000";
     this.centerColor = this.bgColor;
     this.shadowAlpha = 0.65;
-    this.activities = [];
+    this.activities = new Activities();
 };
 
 Clock.prototype = Object.create(LayeredCircle.prototype);
 Clock.prototype.constructor = Clock;
 
-Clock.prototype.addActivities = function(activities) {
-    this.activities = this.activities.concat(activities);
+Clock.prototype.setActivities = function(activitiesObj) {
+    this.activities = activitiesObj;
 };
 
 Clock.prototype.drawTimePeriods = function(activities) {
@@ -289,7 +289,7 @@ Clock.prototype.update = function(event) {
     this.midnight = midnightToday();
     this.removeAllChildren();
 //    console.log(this.todayActivities(this.activities));
-    this.drawTimePeriods(activitiesForDate(this.midnight));
+    this.drawTimePeriods(this.activities.forDate(this.midnight));
     this.drawSegmentBreaks();
     this.drawTimePassedShadow();
     this.drawTimeAndDate();
