@@ -32,6 +32,11 @@ var CircularGraphics = function (x, y) {
     this.yCenter = y;
 };
 
+// lazy copy - TODO fix
+function copy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 CircularGraphics.prototype = Object.create(createjs.Container.prototype);
 CircularGraphics.prototype.constructor = CircularGraphics;
 
@@ -146,8 +151,7 @@ LayeredCircle.prototype.addLayers = function(rows, maxRadius, minRadius) {
             var cell = row[c];
             var h = (cell.height || 1) * height;
 
-            // lazy copy - TODO fix
-            var data = JSON.parse(JSON.stringify(cell));
+            var data = copy(cell);
             data.radius = rad;
             data.height = h;
             cells.push(data);
@@ -206,8 +210,7 @@ Clock.prototype.drawTimePeriods = function(activities) {
 
 // effectively turns times into start and end positions
 Clock.prototype.calculateSector = function(act) {
-    // lazy copy - TODO fix
-    var period = JSON.parse(JSON.stringify(act));
+    var period = copy(act);
 
     // adjust the rendering so midnight is at the top - rotate back by a quarter
     period.start = ((act.start - this.midnight) / this.millis24hour) - 0.25;
@@ -285,7 +288,7 @@ Clock.prototype.update = function(event) {
     this.midnight = midnightToday();
     this.removeAllChildren();
 //    console.log(this.todayActivities(this.activities));
-    this.drawTimePeriods(this.todayActivities(this.activities));
+    this.drawTimePeriods(activitiesForDate(this.midnight));
     this.drawSegmentBreaks();
     this.drawTimePassedShadow();
     this.drawTimeAndDate();
