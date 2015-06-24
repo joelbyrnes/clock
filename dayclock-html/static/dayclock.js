@@ -129,7 +129,7 @@ var LayeredCircle = function (x, y, maxRadius) {
     CircularGraphics.call(this, x, y);
     this.maxRadius = maxRadius;
     this.minRadius = 0;
-    this.gap = this.maxRadius / 100;
+    this.gap = this.maxRadius / 75;
 };
 
 LayeredCircle.prototype = Object.create(CircularGraphics.prototype);
@@ -194,7 +194,9 @@ Clock.prototype.drawTimePeriods = function(activities) {
     // for now every activity has its own layer - later, merge ones that don't overlap.
 
     // outer ring
-    this.addSector({name: "__outer", radius:this.maxRadius-this.gap*3, height: this.gap * 2, start: 0, end: 1, color: "rgb(0, 255, 0)", alpha: 210});
+    var ringh = this.maxRadius / 50;
+    var margin = this.maxRadius / 100;
+    this.addSector({name: "__outer", radius:this.maxRadius-margin-ringh, height: ringh, start: 0, end: 1, color: "rgb(0, 255, 0)", alpha: 210});
 
     var layers = [];
 
@@ -204,8 +206,14 @@ Clock.prototype.drawTimePeriods = function(activities) {
         var sector = this.calculateSector(activities[i]);
         layers.push([sector]);
     }
+    // minimum of 3 layers
+    for (i=0; layers.length < 3; i++) {
+        layers.push([]);
+    }
 
-    this.addLayers(layers, this.maxRadius-this.gap*3);
+    this.addLayers(layers, this.maxRadius-ringh-margin);
+
+    this.drawSegmentBreaks();
 };
 
 // effectively turns times into start and end positions
@@ -279,8 +287,7 @@ Clock.prototype.showTime = function(time) {
     // ensure midnight is set to today, so when the clock ticks over the shadow disappears and activities are correct
     this.midnight = moment(time).startOf('day');
     this.removeAllChildren();
-    this.drawTimePeriods(this.activities.forDate(this.midnight));
-    this.drawSegmentBreaks();
+    this.drawTimePeriods(this.activities.forWeekDay(time));
     this.drawTimePassedShadow(time);
     this.drawTimeAndDate(time);
 };
