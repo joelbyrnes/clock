@@ -6,9 +6,11 @@
 -->
 <ion-view view-title="{{activity.name}}">
   <ion-content class="padding">
-    <img ng-src="{{activity.face}}" style="width: 64px; height: 64px">
-    <p>
-      {{activity.lastText}}
-    </p>
+      <div style="background-color: {{activity.color}}; width: 50px; height: 50px; float: left;"></div>
+      <div style="float: left;">
+          <p>{{activity.name}}</p>
+          <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
+          <p>{{activity.weekdays}}</p>
+      </div>
   </ion-content>
 </ion-view>

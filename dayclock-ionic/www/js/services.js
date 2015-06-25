@@ -3,33 +3,12 @@ angular.module('starter.services', [])
 .factory('Activities', function() {
   // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  var activities = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  },{
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
-  }];
+  var activities = [
+      {id:0, name: "work",  start: {hour: 9, minute: 30},  end: {hour: 18, minute: 0},  color: "orange", weekdays: [1,2,3,4,5]},
+      {id:1, name: "sleep", start: {hour: 0, minute: 0},   end: {hour: 7, minute: 30},  color: "blue", weekdays: [1,2,3,4,5]},
+      {id:2, name: "hack", start: {hour: 18, minute: 0},   end: {hour: 21, minute: 0},  color: "yellow", weekdays: [1,2,3,4]},
+      {id:3, name: "party", start: {hour: 18, minute: 30},   end: {hour: 22, minute: 30},  color: "red", weekdays: [5,6]},
+  ];
 
   return {
     all: function() {

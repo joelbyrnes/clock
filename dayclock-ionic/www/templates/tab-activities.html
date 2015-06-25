@@ -1,10 +1,13 @@
-<ion-view view-title="Actitivies">
+<ion-view view-title="Activities">
   <ion-content>
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="activity in activities" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
-        <img ng-src="{{activity.face}}">
-        <h2>{{activity.name}}</h2>
-        <p>{{activity.lastText}}</p>
+        <div style="background-color: {{activity.color}}; width: 50px; height: 50px; float: left;"></div>
+        <div style="float: left;">
+            <p>{{activity.name}}</p>
+            <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
+            <p>{{activity.weekdays}}</p>
+        </div>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
         <ion-option-button class="button-assertive" ng-click="remove(activity)">
