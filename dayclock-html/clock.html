@@ -1,6 +1,5 @@
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title>Day Clock</title>
     <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
     <script src="static/createjs-2015.05.21.min.js"></script>
@@ -26,14 +25,31 @@
         var animate = true;
 
         function init() {
+            var ow = window.innerWidth;  // alternative document.body.clientWidth
+            var oh = window.innerHeight; // alternative document.body.clientHeight
+
             canvas = document.getElementById("clockCanvas");
-            canvas.width = document.body.clientWidth; //document.width is obsolete
-            canvas.height = document.body.clientHeight; //document.height is obsolete
+            canvas.width = ow;
+            canvas.height = oh;
 
             stage = new createjs.Stage(canvas);
 
-            var ow = window.innerWidth;
-            var oh = window.innerHeight;
+//            if (window.devicePixelRatio) {
+//                console.log("devicePixelRatio " + window.devicePixelRatio);
+////                document.getElementById("output").innerHTML = window.devicePixelRatio;
+//                // grab the width and height from canvas
+//                var height = canvas.getAttribute('height');
+//                var width = canvas.getAttribute('width');
+//                // reset the canvas width and height with window.devicePixelRatio applied
+//                canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+//                canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
+//                // force the canvas back to the original size using css
+//                canvas.style.width = width+"px";
+//                canvas.style.height = height+"px";
+//                // set CreateJS to render scaled
+//                stage.scaleX = stage.scaleY = window.devicePixelRatio;
+//            }
+
             var xCenter = ow / 2;
             var yCenter = oh / 2;
             // more accurately, distance from xy and edge?
@@ -47,7 +63,7 @@
             clock.centerColor = clock.bgColor;
 
             draw(clock);
-            resizeStage(stage, ow, oh, true);
+//            resizeStage(stage, ow, oh, true);
 
             // redraw every 1s
             createjs.Ticker.setFPS(1);
@@ -57,7 +73,7 @@
 
             window.onresize = function() {
                 console.log("resizing");
-                resizeStage(stage, ow, oh, true);
+//                resizeStage(stage, ow, oh, true);
             }
         }
 
