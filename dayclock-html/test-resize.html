@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>Circular graphics - Arc Layers</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <style>
+        body {
+            background: #000000;
+        }
+
+            /*horizontally center the canvas*/
+        #demoCanvas {
+            display: block;
+            margin: 0 auto;
+            background: #666666;
+        }
+    </style>
+    <script>
+        function init() {
+
+            var canvas = document.getElementById("demoCanvas");
+            var context = canvas.getContext("2d");
+            var resizeFactor = 0.5;
+
+//            drawMyWeirdShape(context);
+//            canvas.width *= resizeFactor;
+//            canvas.height *= resizeFactor;
+            context.scale(resizeFactor ,resizeFactor );
+            drawMyWeirdShape(context);
+
+
+        }
+
+        function drawMyWeirdShape(context) {
+            // this is your code for drawing your weird shape
+            context.moveTo(232, 158);
+            context.lineTo(314, 145);
+            context.lineTo(382, 134);
+            context.lineTo(491, 144);
+            context.lineTo(576, 154);
+            context.lineTo(512, 170);
+            context.quadraticCurveTo(404, 152, 352, 160);
+            context.lineTo(304, 168);
+            context.stroke();
+            context.closePath();
+            context.fill();
+
+            context.beginPath();
+
+            context.moveTo(576, 154);
+            context.lineTo(670, 163);
+            context.lineTo(751, 174);
+            context.lineTo(748, 236);
+            context.lineTo(606, 216);
+            context.quadraticCurveTo(705, 188, 576, 179);
+            context.lineTo(512, 170)
+            context.stroke();
+            context.closePath();
+            context.fill();
+        }
+
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="800" height="300"></canvas>
+</body>
+</html>

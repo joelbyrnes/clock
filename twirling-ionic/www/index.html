@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -34,50 +33,23 @@
 
             stage = new createjs.Stage(canvas);
 
-            var ow = canvas.width;
-            var oh = canvas.height;
-            var xCenter = canvas.width / 2;
-            var yCenter = canvas.height / 2;
+            var ow = window.innerWidth;
+            var oh = window.innerHeight;
+            var xCenter = ow / 2;
+            var yCenter = oh / 2;
             // more accurately, distance from xy and edge?
-            var maxRadius = Math.floor(Math.min(canvas.width / 2, canvas.height / 2));
+            var maxRadius = Math.floor(Math.min(ow / 2, oh / 2));
 
             face = new CircularGraphics(xCenter, yCenter);
             stage.addChild(face);
             draw(face, maxRadius);
-            resize(ow, oh, true);
+            resizeStage(stage, ow, oh, true);
 
             createjs.Ticker.addEventListener("tick", tick);
 
-//            window.onresize = function() {
-//                resize(ow, oh, true);
-//            }
-        }
-
-        function resize(ow, oh, keepAspectRatio) {
-            // browser viewport size
-            var w = window.innerWidth;
-            var h = window.innerHeight;
-
-            if (keepAspectRatio) {
-                // keep aspect ratio
-                var scale = Math.min(w / ow, h / oh);
-                stage.scaleX = scale;
-                stage.scaleY = scale;
-
-                // adjust canvas size
-                stage.canvas.width = ow * scale;
-                stage.canvas.height = oh * scale;
-            } else { // scale to exact fit
-                stage.scaleX = w / ow;
-                stage.scaleY = h / oh;
-
-                // adjust canvas size
-                stage.canvas.width = ow * stage.scaleX;
-                stage.canvas.height = oh * stage.scaleY;
+            window.onresize = function() {
+                resizeStage(stage, ow, oh, true);
             }
-
-            // update the stage
-            stage.update()
         }
 
         function draw(face, maxRadius) {
