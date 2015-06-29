@@ -4,11 +4,11 @@
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="activity in activities" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
         <div style="background-color: {{activity.color}}; width: 50px; height: 50px; float: left;"></div>
         <div style="float: left;">
-            <p>{{activity.name}}</p>
+            <h2>{{activity.name}}</h2>
             <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
             <p>
                     <span ng-repeat="day in activity.weekdays">
-                        {{momentLocaleData._weekdays[day]}},
+                        {{momentLocaleData._weekdaysShort[day]}},
                     </span>
             </p>
         </div>

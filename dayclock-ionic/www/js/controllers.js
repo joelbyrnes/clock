@@ -19,8 +19,23 @@ angular.module('starter.controllers', [])
   $scope.momentLocaleData = moment().localeData();
 })
 
+// handle checkbox data with http://ionicframework.com/docs/api/directive/ionCheckbox/
+
 .controller('ActivityDetailCtrl', function($scope, $stateParams, Activities) {
-  $scope.activity = Activities.get($stateParams.activityId);
+  var activity = Activities.get($stateParams.activityId);
+  var momentLocaleData = moment().localeData();
+
+  activity.weekdaysChecked = [
+    {day: 0, name:momentLocaleData._weekdays[0], checked: activity.weekdays.indexOf(0) > -1},
+    {day: 1, name:momentLocaleData._weekdays[1], checked: activity.weekdays.indexOf(1) > -1},
+    {day: 2, name:momentLocaleData._weekdays[2], checked: activity.weekdays.indexOf(2) > -1},
+    {day: 3, name:momentLocaleData._weekdays[3], checked: activity.weekdays.indexOf(3) > -1},
+    {day: 4, name:momentLocaleData._weekdays[4], checked: activity.weekdays.indexOf(4) > -1},
+    {day: 5, name:momentLocaleData._weekdays[5], checked: activity.weekdays.indexOf(5) > -1},
+    {day: 6, name:momentLocaleData._weekdays[6], checked: activity.weekdays.indexOf(6) > -1},
+  ];
+
+  $scope.activity = activity;
   $scope.momentLocaleData = moment().localeData();
 })
 

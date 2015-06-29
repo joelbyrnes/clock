@@ -5,27 +5,27 @@
   The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{activity.name}}">
-  <ion-content class="padding">
-      <div style="background-color: {{activity.color}}; width: 50px; height: 50px; float: left;"></div>
-      <div style="float: left;">
-          <label class="item item-input">
-              <span class="input-label">Color</span>
-              <input type="text" value="{{activity.color}}">
-          </label>
-          <label class="item item-input">
-              <span class="input-label">Name</span>
-              <input type="text" value="{{activity.name}}">
-          </label>
-          <!--<p>{{activity.name}}</p>-->
-          <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
-          <p>{{activity.weekdays}}</p>
-          <!--<input type="radio">-->
+  <ion-content>
 
-          <ion-list>
-              <ion-item ng-repeat="day in activity.weekdays">
-                  <p>{{momentLocaleData._weekdays[day]}}</p>
-              </ion-item>
-          </ion-list>
+      <label class="item item-input">
+          <span class="input-label">Color</span>
+          <input type="text" value="{{activity.color}}" placeholder="CSS value (eg orange)">
+          <div style="background-color: {{activity.color}}; width: 32px; height: 32px;"></div>
+      </label>
+      <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input type="text" value="{{activity.name}}" placeholder="Event (optional)">
+      </label>
+      <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
+      <p>{{activity.weekdays}}</p>
+
+      <div class="list">
+          <ion-checkbox ng-repeat="day in activity.weekdaysChecked"
+                        ng-model="day.checked"
+                        ng-checked="day.checked">
+              {{day.name}}
+          </ion-checkbox>
       </div>
+
   </ion-content>
 </ion-view>

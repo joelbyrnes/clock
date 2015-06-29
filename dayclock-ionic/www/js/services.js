@@ -9,16 +9,17 @@ angular.module('starter.services', [])
       {id:3, name: "party", start: {hour: 18, minute: 30},   end: {hour: 22, minute: 30},  color: "red", weekdays: [5,6]},
   ];
 
+  var saveAll = function(newActitivies) {
+    console.log("saving activities");
+    window.localStorage.setItem("activities", JSON.stringify(newActitivies));
+    activities = newActitivies;
+  };
+
   var activities = JSON.parse(window.localStorage.getItem("activities"));
   if (!activities) {
 //    window.localStorage.setItem("activities", JSON.stringify(initialActivities));
       saveAll(initialActivities);
   }
-
-  var saveAll = function(newActitivies) {
-    window.localStorage.setItem("activities", JSON.stringify(newActitivies));
-    activities = newActitivies;
-  };
 
   return {
     all: function() {
