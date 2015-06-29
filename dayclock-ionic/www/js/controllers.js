@@ -10,15 +10,18 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  
+
   $scope.activities = Activities.all();
   $scope.remove = function(activity) {
     Activities.remove(activity);
-  }
+  };
+
+  $scope.momentLocaleData = moment().localeData();
 })
 
 .controller('ActivityDetailCtrl', function($scope, $stateParams, Activities) {
   $scope.activity = Activities.get($stateParams.activityId);
+  $scope.momentLocaleData = moment().localeData();
 })
 
 .controller('AccountCtrl', function($scope) {

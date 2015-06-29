@@ -6,7 +6,11 @@
         <div style="float: left;">
             <p>{{activity.name}}</p>
             <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
-            <p>{{activity.weekdays}}</p>
+            <p>
+                    <span ng-repeat="day in activity.weekdays">
+                        {{momentLocaleData._weekdays[day]}},
+                    </span>
+            </p>
         </div>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
