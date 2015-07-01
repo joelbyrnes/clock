@@ -25,7 +25,10 @@ angular.module('starter.controllers', [])
   var activity = Activities.get($stateParams.activityId);
   var momentLocaleData = moment().localeData();
 
-  activity.weekdaysChecked = [
+  $scope.activity = activity;
+  $scope.momentLocaleData = momentLocaleData;
+
+  $scope.weekdaysChecked = [
     {day: 0, name:momentLocaleData._weekdays[0], checked: activity.weekdays.indexOf(0) > -1},
     {day: 1, name:momentLocaleData._weekdays[1], checked: activity.weekdays.indexOf(1) > -1},
     {day: 2, name:momentLocaleData._weekdays[2], checked: activity.weekdays.indexOf(2) > -1},
@@ -35,8 +38,23 @@ angular.module('starter.controllers', [])
     {day: 6, name:momentLocaleData._weekdays[6], checked: activity.weekdays.indexOf(6) > -1},
   ];
 
-  $scope.activity = activity;
-  $scope.momentLocaleData = moment().localeData();
+  $scope.submitClicked = function() {
+//    localStorageService.set('hoursPerWeek',$scope.hoursPerWeek);
+    console.log("submitClicked");
+  };
+
+  $scope.dayChanged = function(day) {
+    console.log('dayChanged ', day);
+    var days = [];
+    for (var d=0; d<7; d++) {
+      if ($scope.weekdaysChecked[d].checked) days.push(d);
+    }
+    activity.weekdays = days;
+  };
+
+  $scope.activityChanged = function() {
+    console.log('activityChanged ');
+  };
 })
 
 .controller('AccountCtrl', function($scope) {

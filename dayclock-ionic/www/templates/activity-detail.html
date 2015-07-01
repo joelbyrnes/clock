@@ -4,25 +4,28 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{activity.name}}">
+<ion-view view-title="Edit Activity">
   <ion-content>
 
       <label class="item item-input">
-          <span class="input-label">Color</span>
-          <input type="text" value="{{activity.color}}" placeholder="CSS value (eg orange)">
-          <div style="background-color: {{activity.color}}; width: 32px; height: 32px;"></div>
+          <span class="input-label">Name</span>
+          <input type="text" placeholder="Event (optional)" ng-model="activity.name" ng-blur="activityChanged()">
       </label>
       <label class="item item-input">
-          <span class="input-label">Name</span>
-          <input type="text" value="{{activity.name}}" placeholder="Event (optional)">
+          <span class="input-label">Color</span>
+          <input type="text" placeholder="CSS value (eg orange)" ng-model="activity.color" ng-blur="activityChanged()">
+          <div style="background-color: {{activity.color}}; width: 32px; height: 32px;"></div>
       </label>
       <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
-      <p>{{activity.weekdays}}</p>
+      <div class="item">
+          <pre ng-bind="activity.weekdays"></pre>
+      </div>
 
       <div class="list">
-          <ion-checkbox ng-repeat="day in activity.weekdaysChecked"
+          <ion-checkbox ng-repeat="day in weekdaysChecked"
                         ng-model="day.checked"
-                        ng-checked="day.checked">
+                        ng-checked="day.checked"
+                        ng-change="dayChanged(day)" >
               {{day.name}}
           </ion-checkbox>
       </div>
