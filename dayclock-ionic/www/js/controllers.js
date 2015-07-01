@@ -28,15 +28,10 @@ angular.module('starter.controllers', [])
   $scope.activity = activity;
   $scope.momentLocaleData = momentLocaleData;
 
-  $scope.weekdaysChecked = [
-    {day: 0, name:momentLocaleData._weekdays[0], checked: activity.weekdays.indexOf(0) > -1},
-    {day: 1, name:momentLocaleData._weekdays[1], checked: activity.weekdays.indexOf(1) > -1},
-    {day: 2, name:momentLocaleData._weekdays[2], checked: activity.weekdays.indexOf(2) > -1},
-    {day: 3, name:momentLocaleData._weekdays[3], checked: activity.weekdays.indexOf(3) > -1},
-    {day: 4, name:momentLocaleData._weekdays[4], checked: activity.weekdays.indexOf(4) > -1},
-    {day: 5, name:momentLocaleData._weekdays[5], checked: activity.weekdays.indexOf(5) > -1},
-    {day: 6, name:momentLocaleData._weekdays[6], checked: activity.weekdays.indexOf(6) > -1},
-  ];
+  $scope.weekdaysChecked = [];
+  angular.forEach([0,1,2,3,4,5,6], function(value, key) {
+    this.push({day: value, name:momentLocaleData._weekdays[value], checked: activity.weekdays.indexOf(value) > -1});
+  }, $scope.weekdaysChecked);
 
   $scope.submitClicked = function() {
 //    localStorageService.set('hoursPerWeek',$scope.hoursPerWeek);
@@ -50,10 +45,13 @@ angular.module('starter.controllers', [])
       if ($scope.weekdaysChecked[d].checked) days.push(d);
     }
     activity.weekdays = days;
+
+    $scope.activityChanged();
   };
 
   $scope.activityChanged = function() {
     console.log('activityChanged ');
+    Activities.save();
   };
 })
 

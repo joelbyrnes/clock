@@ -21,6 +21,17 @@ angular.module('starter.services', [])
       saveAll(initialActivities);
   }
 
+  // semi-real guid function from http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+  var guid = function() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+  };
+
   return {
     all: function() {
       return activities;
@@ -30,7 +41,7 @@ angular.module('starter.services', [])
     },
     get: function(activityId) {
       for (var i = 0; i < activities.length; i++) {
-        if (activities[i].id === parseInt(activityId)) {
+        if (activities[i].id.toString() === activityId.toString()) {
           return activities[i];
         }
       }
@@ -38,9 +49,15 @@ angular.module('starter.services', [])
     },
     saveAll: function(newActitivies) {
       saveAll(newActitivies);
+    },
+    save: function() {
+      // objects have already been updated in-place, so we just write to storage
+      saveAll(activities);
     }
   };
 });
+
+// TODO: create new
 
 
 //myApp.controller('Profile', function($scope, $http) {
