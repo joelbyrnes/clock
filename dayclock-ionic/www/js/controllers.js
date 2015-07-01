@@ -49,17 +49,36 @@ angular.module('starter.controllers', [])
     Activities.save();
   };
 
-  // TODO fix timezone thing - epoch wants offset from UTC
-//  $scope.slots = {epochTime: moment().startOf('day').utc().add(activity.start.hour, 'hours').add(activity.start.minute, 'minutes'), format: 24, step: 5};
-//  $scope.slots = {epochTime: moment(activity.start).add(10, 'hours'), format: 24, step: 1};
-  $scope.slots = {epochTime: moment(activity.start), format: 24, step: 1};
+  $scope.startTimePicker = {epochTime: 60 * (activity.start.hour * 60 + activity.start.minute), format: 24, step: 5};
+  $scope.endTimePicker = {epochTime: 60 * (activity.end.hour * 60 + activity.end.minute), format: 24, step: 5};
 
-  $scope.timePickerCallback = function (val) {
+  $scope.startTimePickerCallback = function (val) {
     if (typeof (val) === 'undefined') {
-      console.log('Time not selected');
+      console.log('Start time not selected');
     } else {
-      console.log('Selected time is : ', val);    // `val` will contain the selected time in epoch
-      console.log(moment().startOf('day').add(val, 'seconds'));
+      var mins = val / 60;
+      var hours = Math.floor(mins / 60);
+      mins = mins % 60;
+      console.log(hours, mins);
+      activity.start.hour = hours;
+      activity.start.minute = mins;
+
+      Activities.save();
+    }
+  };
+
+  $scope.endTimePickerCallback = function (val) {
+    if (typeof (val) === 'undefined') {
+      console.log('End time not selected');
+    } else {
+        var mins = val / 60;
+        var hours = Math.floor(mins / 60);
+        mins = mins % 60;
+        console.log(hours, mins);
+        activity.end.hour = hours;
+        activity.end.minute = mins;
+
+        Activities.save();
     }
   };
 })
