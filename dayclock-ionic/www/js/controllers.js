@@ -33,13 +33,8 @@ angular.module('starter.controllers', [])
     this.push({day: value, name:momentLocaleData._weekdays[value], checked: activity.weekdays.indexOf(value) > -1});
   }, $scope.weekdaysChecked);
 
-  $scope.submitClicked = function() {
-//    localStorageService.set('hoursPerWeek',$scope.hoursPerWeek);
-    console.log("submitClicked");
-  };
-
   $scope.dayChanged = function(day) {
-    console.log('dayChanged ', day);
+//    console.log('dayChanged ', day);
     var days = [];
     for (var d=0; d<7; d++) {
       if ($scope.weekdaysChecked[d].checked) days.push(d);
@@ -50,8 +45,22 @@ angular.module('starter.controllers', [])
   };
 
   $scope.activityChanged = function() {
-    console.log('activityChanged ');
+//    console.log('activityChanged ');
     Activities.save();
+  };
+
+  // TODO fix timezone thing - epoch wants offset from UTC
+//  $scope.slots = {epochTime: moment().startOf('day').utc().add(activity.start.hour, 'hours').add(activity.start.minute, 'minutes'), format: 24, step: 5};
+//  $scope.slots = {epochTime: moment(activity.start).add(10, 'hours'), format: 24, step: 1};
+  $scope.slots = {epochTime: moment(activity.start), format: 24, step: 1};
+
+  $scope.timePickerCallback = function (val) {
+    if (typeof (val) === 'undefined') {
+      console.log('Time not selected');
+    } else {
+      console.log('Selected time is : ', val);    // `val` will contain the selected time in epoch
+      console.log(moment().startOf('day').add(val, 'seconds'));
+    }
   };
 })
 

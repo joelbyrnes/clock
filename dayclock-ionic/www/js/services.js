@@ -10,7 +10,7 @@ angular.module('starter.services', [])
   ];
 
   var saveAll = function(newActitivies) {
-    console.log("saving activities");
+//    console.log("saving activities");
     window.localStorage.setItem("activities", JSON.stringify(newActitivies));
     activities = newActitivies;
   };

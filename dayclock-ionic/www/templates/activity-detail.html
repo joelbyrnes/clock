@@ -17,6 +17,11 @@
           <div style="background-color: {{activity.color}}; width: 32px; height: 32px;"></div>
       </label>
       <p>{{activity.start.hour}}:{{activity.start.minute}} - {{activity.end.hour}}:{{activity.end.minute}}</p>
+
+      <ionic-timepicker etime="slots.epochTime" format="slots.format" step="slots.step" callback="timePickerCallback">
+          <button class="button button-block button-positive"> Start  {{activity.start.hour}}:{{activity.start.minute}} </button>
+      </ionic-timepicker>
+
       <div class="item">
           <pre ng-bind="activity.weekdays"></pre>
       </div>
