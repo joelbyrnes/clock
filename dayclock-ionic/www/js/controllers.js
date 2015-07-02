@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope, ActivitiesSvc) {
 
   console.log("DashCtrl");
 
@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
   function draw(clock) {
     // from clockdata.js
 
-    clock.setActivitiesLogic(new ActivitiesLogic(weeklyActivities));
+    clock.setActivitiesLogic(new ActivitiesLogic(ActivitiesSvc.all()));
 
     clock.update();
   }
