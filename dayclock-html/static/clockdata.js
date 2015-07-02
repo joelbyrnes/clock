@@ -7,12 +7,12 @@ var weeklyActivities = [
 ];
 
 
-var Activities = function(weeklyActivities) {
+var ActivitiesLogic = function(weeklyActivities) {
     this.weeklyActivities = weeklyActivities || [];
     this.activities = [];
 };
 
-Activities.prototype.forWeekDay = function(day) {
+ActivitiesLogic.prototype.forWeekDay = function(day) {
     var dayActivities = [];
 
     for (var a=0; a < this.weeklyActivities.length; a++) {
@@ -29,7 +29,7 @@ Activities.prototype.forWeekDay = function(day) {
 };
 
 // TODO fix this
-Activities.prototype.todayActivities = function() {
+ActivitiesLogic.prototype.todayActivities = function() {
     var today = [];
 
     for (var i=0; i < this.activities.length; i++) {

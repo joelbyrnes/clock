@@ -54,7 +54,7 @@
             var day = moment().startOf('day');
             var localeData = moment.localeData();
 
-            var actObj = new Activities(weeklyActivities);
+            var actObj = new ActivitiesLogic(weeklyActivities);
 
             for (var d=0; d < 14; d++) {
                 console.log(day.format());

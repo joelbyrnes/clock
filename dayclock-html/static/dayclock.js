@@ -180,13 +180,13 @@ var Clock = function (x, y, maxRadius) {
     this.bgColor = "#000000";
     this.centerColor = this.bgColor;
     this.shadowAlpha = 0.65;
-    this.activities = new Activities();
+    this.activities = new ActivitiesLogic();
 };
 
 Clock.prototype = Object.create(LayeredCircle.prototype);
 Clock.prototype.constructor = Clock;
 
-Clock.prototype.setActivities = function(activitiesObj) {
+Clock.prototype.setActivitiesLogic = function(activitiesObj) {
     this.activities = activitiesObj;
 };
 
