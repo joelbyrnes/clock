@@ -1,6 +1,89 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope) {
+
+  console.log("DashCtrl");
+
+  var stage, clock;
+  var animate = true;
+
+  function init() {
+    var ow = window.innerWidth;  // alternative document.body.clientWidth
+    var oh = window.innerHeight; // alternative document.body.clientHeight
+
+    canvas = document.getElementById("clockCanvas");
+    canvas.width = ow;
+    canvas.height = oh;
+
+    stage = new createjs.Stage(canvas);
+
+//    if (window.devicePixelRatio) {
+//        console.log("devicePixelRatio " + window.devicePixelRatio);
+////        document.getElementById("output").innerHTML = window.devicePixelRatio;
+//        // grab the width and height from canvas
+//        var height = canvas.getAttribute('height');
+//        var width = canvas.getAttribute('width');
+//        // reset the canvas width and height with window.devicePixelRatio applied
+//        canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+//        canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
+//        // force the canvas back to the original size using css
+//        canvas.style.width = width+"px";
+//        canvas.style.height = height+"px";
+//        // set CreateJS to render scaled
+//        stage.scaleX = stage.scaleY = window.devicePixelRatio;
+//    }
+
+    var xCenter = ow / 2;
+    var yCenter = oh / 2;
+    // more accurately, distance from xy and edge?
+    var maxRadius = Math.floor(Math.min(ow / 2, oh / 2));
+
+    clock = new Clock(xCenter, yCenter, maxRadius);
+    stage.addChild(clock);
+
+//            clock.bgColor = "#222222";
+    canvas.style.background = clock.bgColor;
+    clock.centerColor = clock.bgColor;
+
+    draw(clock);
+//            resizeStage(stage, ow, oh, true);
+
+    // redraw every 1s
+    createjs.Ticker.setFPS(1);
+    createjs.Ticker.addEventListener("tick", tick);
+
+    stage.update();
+
+    window.onresize = function() {
+      console.log("resizing");
+//                resizeStage(stage, ow, oh, true);
+    }
+  }
+
+  function draw(clock) {
+    // from clockdata.js
+
+    clock.setActivitiesLogic(new ActivitiesLogic(weeklyActivities));
+
+    clock.update();
+  }
+
+  // zero-start months
+  var increasingTime = moment({year: 2015, month: 5, day: 25}); //.startOf('day');
+
+  function tick(event) {
+    if (animate) {
+      clock.update(event);
+//                clock.showTime(increasingTime.add(10, 'minutes'));
+    }
+
+    stage.update(event);
+  }
+
+  init();
+
+
+})
 
 .controller('ActivitiesCtrl', function($scope, ActivitiesSvc) {
   // With the new view caching in Ionic, Controllers are only called
