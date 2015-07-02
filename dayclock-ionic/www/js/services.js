@@ -36,7 +36,8 @@ angular.module('starter.services', [])
       return activities;
     },
     remove: function(activity) {
-        activities.splice(activities.indexOf(activity), 1);
+      activities.splice(activities.indexOf(activity), 1);
+      saveAll(activities);
     },
     get: function(activityId) {
       for (var i = 0; i < activities.length; i++) {
@@ -52,6 +53,11 @@ angular.module('starter.services', [])
     save: function() {
       // objects have already been updated in-place, so we just write to storage
       saveAll(activities);
+    },
+    create: function() {
+      var act = {id:guid(), name: "",  start: {hour: 0, minute: 0}, end: {hour: 0, minute: 0}, color: "white", weekdays: []};
+      activities.push(act);
+      return act;
     }
   };
 });
