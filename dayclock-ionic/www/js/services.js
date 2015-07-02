@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Activities', function() {
+.factory('ActivitiesSvc', function() {
 
   var initialActivities = [
       {id:0, name: "work",  start: {hour: 9, minute: 30},  end: {hour: 18, minute: 0},  color: "orange", weekdays: [1,2,3,4,5]},
@@ -17,7 +17,6 @@ angular.module('starter.services', [])
 
   var activities = JSON.parse(window.localStorage.getItem("activities"));
   if (!activities) {
-//    window.localStorage.setItem("activities", JSON.stringify(initialActivities));
       saveAll(initialActivities);
   }
 

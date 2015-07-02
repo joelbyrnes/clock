@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('ActivitiesCtrl', function($scope, Activities) {
+.controller('ActivitiesCtrl', function($scope, ActivitiesSvc) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -11,9 +11,9 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.activities = Activities.all();
+  $scope.activities = ActivitiesSvc.all();
   $scope.remove = function(activity) {
-    Activities.remove(activity);
+    ActivitiesSvc.remove(activity);
   };
 
   $scope.momentLocaleData = moment().localeData();
@@ -21,8 +21,8 @@ angular.module('starter.controllers', [])
 
 // handle checkbox data with http://ionicframework.com/docs/api/directive/ionCheckbox/
 
-.controller('ActivityDetailCtrl', function($scope, $stateParams, Activities) {
-  var activity = Activities.get($stateParams.activityId);
+.controller('ActivityDetailCtrl', function($scope, $stateParams, ActivitiesSvc) {
+  var activity = ActivitiesSvc.get($stateParams.activityId);
   var momentLocaleData = moment().localeData();
 
   $scope.activity = activity;
@@ -46,7 +46,7 @@ angular.module('starter.controllers', [])
 
   $scope.activityChanged = function() {
 //    console.log('activityChanged ');
-    Activities.save();
+    ActivitiesSvc.save();
   };
 
   $scope.startTimePicker = {epochTime: 60 * (activity.start.hour * 60 + activity.start.minute), format: 24, step: 5};
@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
       activity.start.hour = hours;
       activity.start.minute = mins;
 
-      Activities.save();
+      ActivitiesSvc.save();
     }
   };
 
@@ -78,12 +78,12 @@ angular.module('starter.controllers', [])
         activity.end.hour = hours;
         activity.end.minute = mins;
 
-        Activities.save();
+        ActivitiesSvc.save();
     }
   };
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('SettingsCtrl', function($scope) {
   $scope.settings = {
     enableFriends: true
   };
