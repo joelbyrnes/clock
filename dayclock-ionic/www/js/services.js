@@ -9,7 +9,7 @@ angular.module('starter.services', [])
       {id:3, name: "party", start: {hour: 18, minute: 30},   end: {hour: 22, minute: 30},  color: "red", weekdays: [5,6]},
   ];
 
-  var saveAll = function(newActitivies) {
+  var persist = function(newActitivies) {
 //    console.log("saving activities");
     window.localStorage.setItem("activities", JSON.stringify(newActitivies));
     activities = newActitivies;
@@ -17,7 +17,7 @@ angular.module('starter.services', [])
 
   var activities = JSON.parse(window.localStorage.getItem("activities"));
   if (!activities) {
-      saveAll(initialActivities);
+    persist(initialActivities);
   }
 
   // semi-real guid function from http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -37,7 +37,7 @@ angular.module('starter.services', [])
     },
     remove: function(activity) {
       activities.splice(activities.indexOf(activity), 1);
-      saveAll(activities);
+      persist(activities);
     },
     get: function(activityId) {
       for (var i = 0; i < activities.length; i++) {
@@ -47,16 +47,21 @@ angular.module('starter.services', [])
       }
       return null;
     },
-    saveAll: function(newActitivies) {
-      saveAll(newActitivies);
-    },
     save: function() {
       // objects have already been updated in-place, so we just write to storage
-      saveAll(activities);
+      persist(activities);
+    },
+    saveOrUpdate: function(act) {
+      // is new?
+      if (! act.hasOwnProperty("id")) {
+        act.id = guid();
+        activities.push(act)
+      }
+      // otherwise it should already exist in activities
+      persist(activities);
     },
     create: function() {
-      var act = {id:guid(), name: "",  start: {hour: 0, minute: 0}, end: {hour: 0, minute: 0}, color: "white", weekdays: []};
-      activities.push(act);
+      var act = {name: "",  start: {hour: 0, minute: 0}, end: {hour: 0, minute: 0}, color: "white", weekdays: []};
       return act;
     }
   };

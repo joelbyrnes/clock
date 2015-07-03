@@ -105,7 +105,10 @@ angular.module('starter.controllers', [])
 // handle checkbox data with http://ionicframework.com/docs/api/directive/ionCheckbox/
 
 .controller('ActivityDetailCtrl', function($scope, $stateParams, ActivitiesSvc) {
-  var activity = ActivitiesSvc.get($stateParams.activityId);
+  var activity;
+  // I'm not sure if this is a crappy hack or efficient coding.
+  if ($stateParams.activityId == "new") activity = ActivitiesSvc.create();
+  else activity = ActivitiesSvc.get($stateParams.activityId);
   var momentLocaleData = moment().localeData();
 
   $scope.activity = activity;
@@ -129,7 +132,7 @@ angular.module('starter.controllers', [])
 
   $scope.activityChanged = function() {
 //    console.log('activityChanged ');
-    ActivitiesSvc.save();
+    ActivitiesSvc.saveOrUpdate(activity);
   };
 
   $scope.startTimePicker = {epochTime: 60 * (activity.start.hour * 60 + activity.start.minute), format: 24, step: 5};
@@ -146,7 +149,7 @@ angular.module('starter.controllers', [])
       activity.start.hour = hours;
       activity.start.minute = mins;
 
-      ActivitiesSvc.save();
+      ActivitiesSvc.saveOrUpdate(activity);
     }
   };
 
@@ -154,14 +157,14 @@ angular.module('starter.controllers', [])
     if (typeof (val) === 'undefined') {
       console.log('End time not selected');
     } else {
-        var mins = val / 60;
-        var hours = Math.floor(mins / 60);
-        mins = mins % 60;
-        console.log(hours, mins);
-        activity.end.hour = hours;
-        activity.end.minute = mins;
+      var mins = val / 60;
+      var hours = Math.floor(mins / 60);
+      mins = mins % 60;
+      console.log(hours, mins);
+      activity.end.hour = hours;
+      activity.end.minute = mins;
 
-        ActivitiesSvc.save();
+      ActivitiesSvc.saveOrUpdate(activity);
     }
   };
 })
