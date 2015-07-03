@@ -1,12 +1,4 @@
 
-var weeklyActivities = [
-    {name: "work",  start: {hour: 9, minute: 30},  end: {hour: 18, minute: 0},  color: "orange", weekdays: [1,2,3,4,5]},
-    {name: "sleep", start: {hour: 0, minute: 0},   end: {hour: 7, minute: 30},  color: "blue", weekdays: [1,2,3,4,5]},
-    {name: "hack", start: {hour: 18, minute: 0},   end: {hour: 21, minute: 0},  color: "yellow", weekdays: [1,2,3,4]},
-    {name: "party", start: {hour: 18, minute: 30},   end: {hour: 22, minute: 30},  color: "red", weekdays: [5,6]},
-];
-
-
 var ActivitiesLogic = function(weeklyActivities) {
     this.weeklyActivities = weeklyActivities || [];
     this.activities = [];
