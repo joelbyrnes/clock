@@ -52,28 +52,32 @@
         }
 
         function draw(face, maxRadius) {
-            var start = 0;
-            var end = 0.3333;
-            var radius = maxRadius * 0.95;
             var layers = 32;
-            var layerHeight = radius / (layers * 1.125);
+            var rotationRatio = 8;
+            var layerHeightFactor = 1.6; // overlap
+            var circumferenceFactor = 0.3333;
             var alpha = 0.9;
 
-            var r;
-            var hue;
-            for (var i=0; i < layers; i++) {
-                r = radius - i * layerHeight;
-                hue = 180 - i * 5;
+            var radius = maxRadius * 0.95;
+            var minRadius = radius * 0.10;
+            var layerHeight = (radius - minRadius) / layers;
 
+            for (var i=0; i < layers; i++) {
                 // TODO use hue to rgb conversion instead
-                face.addSector({
-                    radius: r,
-                    height: layerHeight * 1.6,
-                    start: start, end: end,
+                var hue = 180 - i * 5;
+
+                var sector = {
+                    i: i,
+                    radius: radius - i * layerHeight,
+                    height: layerHeight * layerHeightFactor,
+                    start: 0, end: circumferenceFactor,
                     color: "rgb(" + Math.trunc(hue/1.3) + ", 44, " + (255 - Math.trunc(hue/1.8)) + ")",
                     alpha: alpha,
-                    rotateRate: 10 - hue/20
-                });
+                    rotateRate: 1 + ( i * (rotationRatio / layers))
+                };
+
+                console.log(sector);
+                face.addSector(sector);
             }
         }
 
