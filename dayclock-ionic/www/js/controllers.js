@@ -99,7 +99,41 @@ angular.module('starter.controllers', [])
     ActivitiesSvc.remove(activity);
   };
 
+  $scope.index = "id";
+
   $scope.momentLocaleData = moment().localeData();
+
+  // TODO send email to me with the activities for debugging
+  $scope.sendFeedback = function() {
+    console.log("sending activities email");
+
+    if(window.plugins && window.plugins.emailComposer) {
+      window.plugins.emailComposer.showEmailComposerWithCallback(function(result) {
+        console.log("Response -> " + result);
+      },
+      "Feedback for your App", // Subject
+      JSON.stringify($scope.activities),                      // Body
+      ["dayclock-data@adeptusproductions.com"],    // To
+      null,                    // CC
+      null,                    // BCC
+      false,                   // isHTML
+      null,                    // Attachments
+      null);                   // Attachment Data
+    }
+  };
+
+  angular.forEach($scope.activities, function(value, key) {
+    console.log(value);
+  });
+
+  // TODO remove this
+//  $scope.sendFeedback();
+  $scope.activitiesJson = JSON.stringify($scope.activities);
+
+  $scope.resetActivities = function() {
+    if (confirm("Are you sure?")) ActivitiesSvc.reset();
+    // TODO somehow reload or invalidate the page so the change appears
+  };
 })
 
 // handle checkbox data with http://ionicframework.com/docs/api/directive/ionCheckbox/

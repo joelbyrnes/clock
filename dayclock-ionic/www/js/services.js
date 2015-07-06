@@ -63,6 +63,9 @@ angular.module('starter.services', [])
     create: function() {
       var act = {name: "",  start: {hour: 0, minute: 0}, end: {hour: 0, minute: 0}, color: "white", weekdays: []};
       return act;
+    },
+    reset: function() {
+      window.localStorage.removeItem("activities");
     }
   };
 });
