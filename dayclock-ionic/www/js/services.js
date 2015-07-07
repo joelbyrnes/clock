@@ -11,11 +11,11 @@ angular.module('starter.services', [])
 
   var persist = function(newActitivies) {
 //    console.log("saving activities");
-    window.localStorage.setItem("activities", JSON.stringify(newActitivies));
+    window.localStorage.setItem("activities", angular.toJson(newActitivies));
     activities = newActitivies;
   };
 
-  var activities = JSON.parse(window.localStorage.getItem("activities"));
+  var activities = angular.fromJson(window.localStorage.getItem("activities"));
   if (!activities) {
     persist(initialActivities);
   }

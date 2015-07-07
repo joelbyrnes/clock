@@ -99,8 +99,6 @@ angular.module('starter.controllers', [])
     ActivitiesSvc.remove(activity);
   };
 
-  $scope.index = "id";
-
   $scope.momentLocaleData = moment().localeData();
 
   // TODO send email to me with the activities for debugging

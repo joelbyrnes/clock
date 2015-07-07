@@ -1,7 +1,7 @@
 <ion-view view-title="Activities">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="activity in activities track by $index" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="activity in activities" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
         <div style="background-color: {{activity.color}}; width: 50px; height: 50px; float: left;"></div>
         <div style="float: left;">
             <h2>{{activity.name}}</h2>
@@ -19,7 +19,7 @@
         </ion-option-button>
       </ion-item>
         <ion-item class="item-avatar item-icon-left" type="item-text-wrap">
-          <a class="button button-icon icon ion-plus" href="#/tab/activities/new"></a>
+          <a class="button button-icon icon ion-android-add" href="#/tab/activities/new"></a>
       </ion-item>
     </ion-list>
 
