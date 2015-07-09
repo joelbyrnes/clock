@@ -2,8 +2,6 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, ActivitiesSvc) {
 
-  console.log("DashCtrl");
-
   var stage, clock;
   var animate = true;
 
@@ -121,7 +119,7 @@ angular.module('starter.controllers', [])
   };
 
   angular.forEach($scope.activities, function(value, key) {
-    console.log(value);
+//    console.log(value);
   });
 
   // TODO remove this
@@ -172,12 +170,12 @@ angular.module('starter.controllers', [])
 
   $scope.startTimePickerCallback = function (val) {
     if (typeof (val) === 'undefined') {
-      console.log('Start time not selected');
+//      console.log('Start time not selected');
     } else {
       var mins = val / 60;
       var hours = Math.floor(mins / 60);
       mins = mins % 60;
-      console.log(hours, mins);
+//      console.log(hours, mins);
       activity.start.hour = hours;
       activity.start.minute = mins;
 
@@ -187,12 +185,12 @@ angular.module('starter.controllers', [])
 
   $scope.endTimePickerCallback = function (val) {
     if (typeof (val) === 'undefined') {
-      console.log('End time not selected');
+//      console.log('End time not selected');
     } else {
       var mins = val / 60;
       var hours = Math.floor(mins / 60);
       mins = mins % 60;
-      console.log(hours, mins);
+//      console.log(hours, mins);
       activity.end.hour = hours;
       activity.end.minute = mins;
 

@@ -202,7 +202,7 @@ Clock.prototype.drawTimePeriods = function(activities) {
 
     for (var i=0; i < activities.length; i++) {
 //        console.log("adding activity " + i);
-        console.log(activities[i]);
+//        console.log(activities[i]);
         var sector = this.calculateSector(activities[i]);
         layers.push([sector]);
     }
@@ -281,8 +281,8 @@ Clock.prototype.update = function(event) {
 };
 
 Clock.prototype.showTime = function(time) {
-    console.log("showing time " + time.format());
-    console.log(moment.localeData().weekdays(time));
+//    console.log("showing time " + time.format());
+//    console.log(moment.localeData().weekdays(time));
 
     // ensure midnight is set to today, so when the clock ticks over the shadow disappears and activities are correct
     this.midnight = moment(time).startOf('day');
