@@ -79,17 +79,22 @@
             return parseInt(inputValue(name));
         }
 
-        function draw(face, maxRadius) {
-            var layers = inputValue("layers");
-            var rotationRange = inputValue("rotationRange");
-            var layerHeightFactor = inputValue("layerHeightFactor"); // overlap
-            var circumferenceFactor = inputValue("circumferenceFactor");
-            var alpha = inputValue("alpha");
-            var hueStart = inputValueInt("hueStart");
-            var hueRange = inputValueInt("hueRange");
+        function inputValueFloat(name) {
+            return parseFloat(inputValue(name));
+        }
 
-            var radius = maxRadius * 0.95;
-            var minRadius = radius * 0.10;
+        function draw(face, maxRadius) {
+            var layers = inputValueInt("layers");
+            var rotationStart = inputValueFloat("rotationStart");
+            var rotationRange = inputValueFloat("rotationRange");
+            var layerHeightFactor = inputValueFloat("layerHeightFactor"); // overlap
+            var circumferenceFactor = inputValueFloat("circumferenceFactor");
+            var alpha = inputValueFloat("alpha");
+            var hueStart = inputValueFloat("hueStart");
+            var hueRange = inputValueFloat("hueRange");
+
+            var radius = maxRadius * 0.92;
+            var minRadius = maxRadius * 0.10;
             var layerHeight = (radius - minRadius) / layers;
             var rotationRate = rotationRange / layers;
             var hueRate = hueRange / layers;
@@ -103,9 +108,10 @@
                 var hue = hueStart + i * hueRate;
 
                 sector.i = i;
-                sector.radius = radius - i * layerHeight;
+//                sector.radius = radius - i * layerHeight - sector.height;
+                sector.radius = minRadius + i * layerHeight;
                 sector.color = "hsla(" + hue + ", 80%, 45%, " + alpha + ")";
-                sector.rotateRate = 1 + (i * rotationRate);
+                sector.rotateRate = rotationStart + ((layers - i) * rotationRate);
 
                 console.log(sector);
                 face.addSector(sector);
@@ -132,38 +138,44 @@
 <body onload="init();">
     <div id="settings">
 
-        <table>
-            <tr>
-                <th>layers</th>
-                <td><input type="text" name="layers" value="32" size="5"/></td>
-            </tr>
-            <tr>
-                <th>rotationRange</th>
-                <td><input type="text" name="rotationRange" value="8" size="5"/></td>
-            </tr>
-            <tr>
-                <th>layerHeightFactor</th>
-                <td><input type="text" name="layerHeightFactor" value="1.6" size="5"/></td>
-            </tr>
-            <tr>
-                <th>circumferenceFactor</th>
-                <td><input type="text" name="circumferenceFactor" value="0.3333" size="5"/></td>
-            </tr>
-            <tr>
-                <th>alpha</th>
-                <td><input type="text" name="alpha" value="0.9" size="5"/></td>
-            </tr>
-            <tr>
-                <th>hueStart</th>
-                <td><input type="text" name="hueStart" value="290" size="5"/></td>
-            </tr>
-            <tr>
-                <th>hueRange</th>
-                <td><input type="text" name="hueRange" value="-58" size="5"/></td>
-            </tr>
-        </table>
+        <form onsubmit="init(); return false;" >
+            <table>
+                <tr>
+                    <th>layers</th>
+                    <td><input type="text" name="layers" value="32" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>rotationStart</th>
+                    <td><input type="text" name="rotationStart" value="1" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>rotationRange</th>
+                    <td><input type="text" name="rotationRange" value="8" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>layerHeightFactor</th>
+                    <td><input type="text" name="layerHeightFactor" value="1.6" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>circumferenceFactor</th>
+                    <td><input type="text" name="circumferenceFactor" value="0.3333" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>hueStart</th>
+                    <td><input type="text" name="hueStart" value="233" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>hueRange</th>
+                    <td><input type="text" name="hueRange" value="58" size="5"/></td>
+                </tr>
+                <tr>
+                    <th>alpha</th>
+                    <td><input type="text" name="alpha" value="0.9" size="5"/></td>
+                </tr>
+            </table>
 
-        <button id="go" name="go" onclick="">GO</button>
+            <input type="submit" id="go" name="go" value="Go" onclick="init(); return false;"/>
+        </form>
     </div>
 
     <canvas id="demoCanvas" height="400" width="400"></canvas>
