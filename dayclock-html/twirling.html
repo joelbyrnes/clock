@@ -36,9 +36,10 @@
             padding-right: 5px;
         }
 
-        button#go {
+        #go {
             display: block;
             margin: 0 auto;
+            text-align: center;
         }
 
     </style>
@@ -173,8 +174,8 @@
                     <td><input type="text" name="alpha" value="0.9" size="5"/></td>
                 </tr>
             </table>
-
-            <input type="submit" id="go" name="go" value="Go" onclick="init(); return false;"/>
+            <br/>
+            <span id="go">Click <input type="submit" name="go" value="Go" onclick="init(); return false;"/> or press enter</span>
         </form>
     </div>
 
