@@ -53,14 +53,18 @@
 
         function draw(face, maxRadius) {
             var layers = 32;
-            var rotationRatio = 0.25;
+            var rotationRange = 8;
             var layerHeightFactor = 1.6; // overlap
             var circumferenceFactor = 0.3333;
             var alpha = 0.9;
+            var hueStart = 290;
+            var hueRange = -58;
 
             var radius = maxRadius * 0.95;
             var minRadius = radius * 0.10;
             var layerHeight = (radius - minRadius) / layers;
+            var rotationRate = rotationRange / layers;
+            var hueRate = hueRange / layers;
 
             var sector = {
                 height: layerHeight * layerHeightFactor,
@@ -68,18 +72,19 @@
             };
 
             for (var i=0; i < layers; i++) {
-                var hue = 290 - i * 1.8;
+                var hue = hueStart + i * hueRate;
 
                 sector.i = i;
                 sector.radius = radius - i * layerHeight;
                 sector.color = "hsla(" + hue + ", 80%, 45%, " + alpha + ")";
-                sector.rotateRate = 1 + (i * rotationRatio);
+                sector.rotateRate = 1 + (i * rotationRate);
 
                 console.log(sector);
                 face.addSector(sector);
 
 //                sector.start = sector.start + (circumferenceFactor * 2);
 //                sector.end = sector.end + (circumferenceFactor * 2);
+//                console.log(sector);
 //                face.addSector(sector);
             }
         }
@@ -95,7 +100,9 @@
 
     </script>
 </head>
+
 <body onload="init();">
-<canvas id="demoCanvas"></canvas>
+    <canvas id="demoCanvas" height="400" width="400"></canvas>
 </body>
+
 </html>
