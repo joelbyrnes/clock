@@ -21,6 +21,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 })
 
+// force tabs to the bottom - although on iphone the standard is at the top.
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+})
+
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
