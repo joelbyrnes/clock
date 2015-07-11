@@ -10,6 +10,7 @@
             background: #000000;
             padding: 0;
             margin: 0;
+            color: white;
         }
 
         /*horizontally center the canvas*/
@@ -18,6 +19,28 @@
             margin: 0 auto;
             /*background: #222222;*/
         }
+
+        div#settings {
+            float: left;
+            /*background: hsla(57, 28%, 94%, 1);*/
+            /*border-left: 1px white;*/
+            height: 100%;
+        }
+
+        div#settings table {
+            border: 1px;
+        }
+
+        div#settings th {
+            text-align: left;
+            padding-right: 5px;
+        }
+
+        button#go {
+            display: block;
+            margin: 0 auto;
+        }
+
     </style>
     <script>
     	var stage;
@@ -27,38 +50,43 @@
 
         function init() {
             var canvas = document.getElementById("demoCanvas");
-            canvas.width = document.body.clientWidth; //document.width is obsolete
-            canvas.height = document.body.clientHeight; //document.height is obsolete
-
             stage = new createjs.Stage(canvas);
 
-            var ow = window.innerWidth;
-            var oh = window.innerHeight;
-            var xCenter = ow / 2;
-            var yCenter = oh / 2;
+            var min = Math.min(window.innerWidth, window.innerHeight);
+
+            var xCenter = min / 2;
+            var yCenter = min / 2;
             // more accurately, distance from xy and edge?
-            var maxRadius = Math.floor(Math.min(ow / 2, oh / 2));
+            var maxRadius = min / 2;
 
             face = new CircularGraphics(xCenter, yCenter);
             stage.addChild(face);
             draw(face, maxRadius);
-            resizeStage(stage, ow, oh, true);
+            resizeStage(stage, min, min, true);
 
             createjs.Ticker.addEventListener("tick", tick);
 
             window.onresize = function() {
-                resizeStage(stage, ow, oh, true);
+                resizeStage(stage, min, min, true);
             }
         }
 
+        function inputValue(name) {
+            return document.getElementsByName(name)[0].value;
+        }
+
+        function inputValueInt(name) {
+            return parseInt(inputValue(name));
+        }
+
         function draw(face, maxRadius) {
-            var layers = 32;
-            var rotationRange = 8;
-            var layerHeightFactor = 1.6; // overlap
-            var circumferenceFactor = 0.3333;
-            var alpha = 0.9;
-            var hueStart = 290;
-            var hueRange = -58;
+            var layers = inputValue("layers");
+            var rotationRange = inputValue("rotationRange");
+            var layerHeightFactor = inputValue("layerHeightFactor"); // overlap
+            var circumferenceFactor = inputValue("circumferenceFactor");
+            var alpha = inputValue("alpha");
+            var hueStart = inputValueInt("hueStart");
+            var hueRange = inputValueInt("hueRange");
 
             var radius = maxRadius * 0.95;
             var minRadius = radius * 0.10;
@@ -102,6 +130,42 @@
 </head>
 
 <body onload="init();">
+    <div id="settings">
+
+        <table>
+            <tr>
+                <th>layers</th>
+                <td><input type="text" name="layers" value="32" size="5"/></td>
+            </tr>
+            <tr>
+                <th>rotationRange</th>
+                <td><input type="text" name="rotationRange" value="8" size="5"/></td>
+            </tr>
+            <tr>
+                <th>layerHeightFactor</th>
+                <td><input type="text" name="layerHeightFactor" value="1.6" size="5"/></td>
+            </tr>
+            <tr>
+                <th>circumferenceFactor</th>
+                <td><input type="text" name="circumferenceFactor" value="0.3333" size="5"/></td>
+            </tr>
+            <tr>
+                <th>alpha</th>
+                <td><input type="text" name="alpha" value="0.9" size="5"/></td>
+            </tr>
+            <tr>
+                <th>hueStart</th>
+                <td><input type="text" name="hueStart" value="290" size="5"/></td>
+            </tr>
+            <tr>
+                <th>hueRange</th>
+                <td><input type="text" name="hueRange" value="-58" size="5"/></td>
+            </tr>
+        </table>
+
+        <button id="go" name="go" onclick="">GO</button>
+    </div>
+
     <canvas id="demoCanvas" height="400" width="400"></canvas>
 </body>
 
