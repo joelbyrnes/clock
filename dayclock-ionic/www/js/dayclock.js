@@ -224,6 +224,16 @@ Clock.prototype.defragmentLayers = function(activities) {
       subsequent.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
     }
 
+    // try to find small time blocks that can fit in gaps
+
+    // first gap
+    var smalls = sectors.filter(function(x) { return x.start >= layer[0].end && x.end <= layer[1].start });
+    if (smalls.length) {
+//      console.log("smalls", smalls);
+      layer.push(smalls[0]);
+      sectors.splice(sectors.indexOf(smalls[0]), 1);
+    }
+
     layers.push(layer);
   }
 
