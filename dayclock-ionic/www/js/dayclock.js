@@ -208,6 +208,7 @@ Clock.prototype.defragmentLayers = function(activities) {
   var layers = [];
 
   while (sectors.length) {
+//    console.log("defragmenting layer ", layers.length);
 
     var layer = [];
 
@@ -226,13 +227,17 @@ Clock.prototype.defragmentLayers = function(activities) {
 
     // try to find small time blocks that can fit in gaps
 
-    // first gap
-    var smalls = sectors.filter(function(x) { return x.start >= layer[0].end && x.end <= layer[1].start });
-    if (smalls.length) {
-      angular.forEach(smalls, function(a) {
-        layer.push(a);
-        sectors.splice(sectors.indexOf(a), 1);
-      });
+    var gaps = layer.length - 1;
+    for (var g=0; g < gaps; g++) {
+//      console.log("finding gaps in layer gap ", g);
+      var smalls = sectors.filter(function(x) { return x.start >= layer[g].end && x.end <= layer[g + 1].start });
+//      console.log("filling gap with " + smalls.length + " activities");
+      if (smalls.length) {
+        angular.forEach(smalls, function(a) {
+          layer.push(a);
+          sectors.splice(sectors.indexOf(a), 1);
+        });
+      }
     }
 
     layers.push(layer);
