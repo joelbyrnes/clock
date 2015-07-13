@@ -202,25 +202,33 @@ Clock.prototype.defragmentLayers = function(activities) {
 
   var layers = [];
 
-  // find first
-  var first = sectors.sort(function(a, b) { return a.start - b.start })[0];
-  var second = sectors.filter(function(x) { return x.start >= first.end })[0];
-  var third = sectors.filter(function(x) { return x.start >= second.end })[0];
+  while (sectors.length) {
 
-  layers.push([first, second, third]);
+    var layer = [];
 
-  console.log(layers[0]);
+    // sort by total length
+//    sectors.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
 
-  sectors.splice(sectors.indexOf(first), 1);
-  sectors.splice(sectors.indexOf(second), 1);
-  sectors.splice(sectors.indexOf(third), 1);
+    // sort by start order
+    sectors.sort(function(a, b) { return a.start - b.start });
 
-  for (i=0; i < sectors.length; i++) {
+    var first = sectors[0];
+    layer.push(first);
+    sectors.splice(sectors.indexOf(first), 1);
 
-    layers.push([sectors[i]]);
+    var subsequent = sectors.filter(function(x) { return x.start >= first.end });
+
+    while (subsequent.length) {
+      var next = subsequent[0];
+      layer.push(next);
+      sectors.splice(sectors.indexOf(next), 1);
+      subsequent = subsequent.filter(function(x) { return x.start >= next.end });
+    }
+
+    layers.push(layer);
   }
 
-  console.log(layers);
+//  console.log(layers);
 
   return layers;
 };
