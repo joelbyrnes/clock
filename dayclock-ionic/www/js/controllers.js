@@ -180,6 +180,12 @@ angular.module('starter.controllers', [])
       activity.start.hour = hours;
       activity.start.minute = mins;
 
+      // if start time after end time, bad things happen. set end to the same as start.
+      if (val > 60 * (activity.end.hour * 60 + activity.end.minute)) {
+        activity.end.hour = hours;
+        activity.end.minute = mins;
+      }
+
       ActivitiesSvc.saveOrUpdate(activity);
     }
   };

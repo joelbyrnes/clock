@@ -12,7 +12,9 @@ ActivitiesLogic.prototype.forWeekDay = function(day) {
             var act = copy(this.weeklyActivities[a]);
             act.start = moment(act.start);
             act.end = moment(act.end);
-            dayActivities.push(act);
+
+            if (act.end >= act.start) dayActivities.push(act);
+            else console.log("activity " + act.name + " filtered out because it starts after it ends.");
 //            console.log(act);
         }
 
