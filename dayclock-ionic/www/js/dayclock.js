@@ -203,24 +203,21 @@ Clock.prototype.defragmentLayers = function(activities) {
   var layers = [];
 
   while (sectors.length) {
-
-    var layer = [];
-
     // sort by total length
 //    sectors.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
 
     // sort by start order
     sectors.sort(function(a, b) { return a.start - b.start });
 
-    var first = sectors[0];
-    layer.push(first);
-    sectors.splice(sectors.indexOf(first), 1);
+    var layer = [];
 
-    var subsequent = sectors.filter(function(x) { return x.start >= first.end });
+    // copy list in order
+    var subsequent = sectors.slice();
 
     while (subsequent.length) {
       var next = subsequent[0];
       layer.push(next);
+      // remove from sectors
       sectors.splice(sectors.indexOf(next), 1);
       subsequent = subsequent.filter(function(x) { return x.start >= next.end });
     }
