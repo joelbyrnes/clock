@@ -191,8 +191,10 @@ Clock.prototype.setActivitiesLogic = function(activitiesObj) {
 };
 
 Clock.prototype.defragmentLayers = function(activities) {
-  // for now every activity has its own layer - later, merge ones that don't overlap.
 //  console.log(activities);
+
+  // TODO algorithm: sort by longest to shortest, place them in time order.
+  // TODO then go through remaining and find ones that can fit into gaps.
 
   var sectors = [];
 
@@ -200,14 +202,12 @@ Clock.prototype.defragmentLayers = function(activities) {
     sectors.push(this.calculateSector(activities[i]));
   }
 
+  // sort by start order
+  sectors.sort(function(a, b) { return a.start - b.start });
+
   var layers = [];
 
   while (sectors.length) {
-    // sort by total length
-//    sectors.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
-
-    // sort by start order
-    sectors.sort(function(a, b) { return a.start - b.start });
 
     var layer = [];
 
@@ -220,6 +220,8 @@ Clock.prototype.defragmentLayers = function(activities) {
       // remove from sectors
       sectors.splice(sectors.indexOf(next), 1);
       subsequent = subsequent.filter(function(x) { return x.start >= next.end });
+      // sort by longest to shortest
+      subsequent.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
     }
 
     layers.push(layer);
