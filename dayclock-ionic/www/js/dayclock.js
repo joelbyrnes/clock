@@ -166,37 +166,7 @@ LayeredCircle.prototype.addLayers = function(rows, maxRadius, minRadius) {
     this.addSectors(cells);
 };
 
-
-function midnightToday() {
-    return moment().startOf('day');
-}
-
-
-var Clock = function (x, y, maxRadius) {
-    LayeredCircle.call(this, x, y, maxRadius);
-    this.minRadius = maxRadius / 3;
-    this.midnight = midnightToday();
-    this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
-    this.bgColor = "#000000";
-    this.centerColor = this.bgColor;
-    this.shadowAlpha = 0.65;
-    this.activities = new ActivitiesLogic();
-};
-
-Clock.prototype = Object.create(LayeredCircle.prototype);
-Clock.prototype.constructor = Clock;
-
-Clock.prototype.setActivitiesLogic = function(activitiesObj) {
-    this.activities = activitiesObj;
-};
-
-Clock.prototype.defragmentLayers = function(activities) {
-  var sectors = [];
-
-  for (var i=0; i < activities.length; i++) {
-    sectors.push(this.calculateSector(activities[i]));
-  }
-
+LayeredCircle.prototype.defragmentLayers = function(sectors) {
   // sort by start order
   sectors.sort(function(a, b) { return a.start - b.start });
 
@@ -223,7 +193,7 @@ Clock.prototype.defragmentLayers = function(activities) {
 
     layers.push(layer);
 
-    // try to find small time blocks that can fit in gaps - TODO should also look at gap to midnight
+    // try to find small time blocks that can fit in gaps - TODO should also look at gap to end
 
     if (layer.length < 2) continue;
 
@@ -241,9 +211,33 @@ Clock.prototype.defragmentLayers = function(activities) {
     }
   }
 
-  console.log(layers);
+//  console.log(layers);
 
   return layers;
+};
+
+
+function midnightToday() {
+    return moment().startOf('day');
+}
+
+
+var Clock = function (x, y, maxRadius) {
+    LayeredCircle.call(this, x, y, maxRadius);
+    this.minRadius = maxRadius / 3;
+    this.midnight = midnightToday();
+    this.millis24hour = 86400000; // 24 * 60 * 60 * 1000;
+    this.bgColor = "#000000";
+    this.centerColor = this.bgColor;
+    this.shadowAlpha = 0.65;
+    this.activities = new ActivitiesLogic();
+};
+
+Clock.prototype = Object.create(LayeredCircle.prototype);
+Clock.prototype.constructor = Clock;
+
+Clock.prototype.setActivitiesLogic = function(activitiesObj) {
+    this.activities = activitiesObj;
 };
 
 Clock.prototype.drawTimePeriods = function(activities) {
@@ -252,7 +246,16 @@ Clock.prototype.drawTimePeriods = function(activities) {
     var margin = this.maxRadius / 100;
     this.addSector({name: "__outer", radius:this.maxRadius-margin-ringh, height: ringh, start: 0, end: 1, color: "rgb(0, 255, 0)", alpha: 210});
 
-    var layers = this.defragmentLayers(activities);
+//    var sectors = activities.map(this.calculateSector); // TODO why doesn't map work?
+//    console.log(sectors);
+
+    var sectors = [];
+
+    for (var i=0; i < activities.length; i++) {
+      sectors.push(this.calculateSector(activities[i]));
+    }
+
+    var layers = this.defragmentLayers(sectors);
 
     // minimum of 3 layers
     for (i=0; layers.length < 3; i++) {
