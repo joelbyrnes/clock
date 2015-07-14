@@ -8,13 +8,13 @@ ActivitiesLogic.prototype.forWeekDay = function(day) {
     var dayActivities = [];
 
     for (var a=0; a < this.weeklyActivities.length; a++) {
-        if (this.weeklyActivities[a].weekdays.indexOf(day.day()) > -1) {
+        if (this.weeklyActivities[a].weekdays && this.weeklyActivities[a].weekdays.indexOf(day.day()) > -1) {
             var act = copy(this.weeklyActivities[a]);
             act.start = moment(act.start);
             act.end = moment(act.end);
 
             if (act.end >= act.start) dayActivities.push(act);
-            else console.log("activity " + act.name + " filtered out because it starts after it ends.");
+            else console.log("activity " + act.id + " '" + act.name + "' filtered out because it starts after it ends.");
 //            console.log(act);
         }
 
@@ -32,16 +32,21 @@ ActivitiesLogic.prototype.random = function(count) {
   var dayActivities = [];
 
   for (var a=0; a < count; a++) {
-    var act = {id:a, color: "hsl(" + getRandomIntInclusive(0, 360) + ", 100%, 50%)"};
+    var act = {id:a, color: "hsl(" + Math.floor((a/count) * 360) + ", 100%, 50%)"};
 
-    var start = { hour: getRandomIntInclusive(0, 22), minute: getRandomIntInclusive(0, 5) * 10 };
-    var end = { hour: getRandomIntInclusive(start.hour, 23), minute: getRandomIntInclusive(0, 5) * 10 };
+    // mins in day: 1440 - 10 min periods: 144
+    var startBlock = getRandomIntInclusive(0, 142);
+    var endBlock = getRandomIntInclusive(startBlock, 144);
+
+    var start = {hour: Math.floor(startBlock / 6), minute: startBlock % 6};
+    var end = {hour: Math.floor(endBlock / 6), minute: endBlock % 6};
+
+//    console.log(act, start, end);
 
     act.start = moment(start);
     act.end = moment(end);
 
     dayActivities.push(act);
-    console.log(act);
   }
   return dayActivities;
 };
