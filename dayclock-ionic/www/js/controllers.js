@@ -123,14 +123,24 @@ angular.module('starter.controllers', [])
 //    console.log(value);
   });
 
-  // TODO remove this
+  // TODO remove this, implement email button
 //  $scope.sendFeedback();
   $scope.activitiesJson = JSON.stringify($scope.activities);
 
   $scope.resetActivities = function() {
-    if (confirm("Are you sure?")) ActivitiesSvc.reset();
-    // TODO somehow reload or invalidate the page so the change appears
+    if (confirm("Are you sure?")) {
+      ActivitiesSvc.reset();
+      // effectively reloads the page so the change appears
+      $scope.activities = ActivitiesSvc.all();
+    }
   };
+
+  $scope.randomiseActivities = function() {
+    if (confirm("This replaces all your activities with some randomly generated ones. Are you sure?")) {
+      $scope.activities = new ActivitiesLogic().random(10);
+      ActivitiesSvc.saveAll($scope.activities);
+    }
+  }
 })
 
 // handle checkbox data with http://ionicframework.com/docs/api/directive/ionCheckbox/

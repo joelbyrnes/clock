@@ -339,7 +339,7 @@ Clock.prototype.showTime = function(time) {
     this.midnight = moment(time).startOf('day');
     this.removeAllChildren();
     this.drawTimePeriods(this.activities.forWeekDay(time));
-//    this.drawTimePeriods(this.activities.random(30));
+//    this.drawTimePeriods(this.activities.forWeekDay(time, this.activities.random(20)));
     this.drawTimePassedShadow(time);
     this.drawTimeAndDate(time);
 };

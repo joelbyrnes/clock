@@ -4,12 +4,13 @@ var ActivitiesLogic = function(weeklyActivities) {
     this.activities = [];
 };
 
-ActivitiesLogic.prototype.forWeekDay = function(day) {
+ActivitiesLogic.prototype.forWeekDay = function(day, acts) {
     var dayActivities = [];
+    var activities = acts || this.weeklyActivities;
 
-    for (var a=0; a < this.weeklyActivities.length; a++) {
-        if (this.weeklyActivities[a].weekdays && this.weeklyActivities[a].weekdays.indexOf(day.day()) > -1) {
-            var act = copy(this.weeklyActivities[a]);
+    for (var a=0; a < activities.length; a++) {
+        if (activities[a].weekdays.indexOf(day.day()) > -1) {
+            var act = copy(activities[a]);
             act.start = moment(act.start);
             act.end = moment(act.end);
 
@@ -29,26 +30,23 @@ function getRandomIntInclusive(min, max) {
 }
 
 ActivitiesLogic.prototype.random = function(count) {
-  var dayActivities = [];
+  var randomActs = [];
 
   for (var a=0; a < count; a++) {
-    var act = {id:a, color: "hsl(" + Math.floor((a/count) * 360) + ", 100%, 50%)"};
+    var act = {id:a, name: ''+a, color: "hsl(" + Math.floor((a/count) * 360) + ", 100%, 50%)", weekdays: [0,1,2,3,4,5,6]};
 
     // mins in day: 1440 - 10 min periods: 144
     var startBlock = getRandomIntInclusive(0, 142);
     var endBlock = getRandomIntInclusive(startBlock, 144);
 
-    var start = {hour: Math.floor(startBlock / 6), minute: startBlock % 6};
-    var end = {hour: Math.floor(endBlock / 6), minute: endBlock % 6};
+    act.start = {hour: Math.floor(startBlock / 6), minute: startBlock % 6};
+    act.end = {hour: Math.floor(endBlock / 6), minute: endBlock % 6};
 
-//    console.log(act, start, end);
+    console.log(act, act.start, act.end);
 
-    act.start = moment(start);
-    act.end = moment(end);
-
-    dayActivities.push(act);
+    randomActs.push(act);
   }
-  return dayActivities;
+  return randomActs;
 };
 
 // TODO fix this

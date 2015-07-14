@@ -51,6 +51,9 @@ angular.module('starter.services', [])
       // objects have already been updated in-place, so we just write to storage
       persist(activities);
     },
+    saveAll: function(newActivities) {
+      persist(newActivities);
+    },
     saveOrUpdate: function(act) {
       // is new?
       if (! act.hasOwnProperty("id")) {
