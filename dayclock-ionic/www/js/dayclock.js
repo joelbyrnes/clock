@@ -1,4 +1,3 @@
-
 function resizeStage(stage, ow, oh, keepAspectRatio) {
     // browser viewport size
     var w = window.innerWidth;
@@ -62,15 +61,15 @@ CircularGraphics.prototype.sectorShape = function(cell) {
     return arc;
 };
 
-// arc from center
-CircularGraphics.prototype.arcShape = function(cell) {
+// hollow arc from center
+CircularGraphics.prototype.arcShapeOutline = function(cell, strokeStyle) {
     var arc = new createjs.Shape();
 
 //    arc.graphics.arc(xCenter, yCenter, 20, 0 * Math.PI, 2.2 * Math.PI, true).lineTo(xCenter, yCenter).closePath();
 
     arc.graphics
-        .beginFill(cell.color)
-        .setStrokeStyle(0)
+        .setStrokeStyle(strokeStyle)
+        .beginStroke(cell.color)
 //        .moveTo(this.xCenter, this.yCenter)
         .arc(this.xCenter, this.yCenter, cell.radius, cell.start * 2 * Math.PI, cell.end * 2 * Math.PI, false)
         .lineTo(this.xCenter, this.yCenter)
@@ -242,9 +241,9 @@ Clock.prototype.setActivitiesLogic = function(activitiesObj) {
 
 Clock.prototype.drawTimePeriods = function(activities) {
     // outer ring
-    var ringh = this.maxRadius / 50;
+    var ringh = this.maxRadius / 70;
     var margin = this.maxRadius / 100;
-    this.addSector({name: "__outer", radius:this.maxRadius-margin-ringh, height: ringh, start: 0, end: 1, color: "rgb(0, 255, 0)", alpha: 210});
+    this.addSector({name: "__outer", radius:this.maxRadius-margin-ringh, height: ringh, start: 0, end: 1, color: "hsl(0, 0%, 70%)", alpha: 210});
 
 //    var sectors = activities.map(this.calculateSector); // TODO why doesn't map work?
 //    console.log(sectors);
@@ -279,19 +278,11 @@ Clock.prototype.calculateSector = function(act) {
 };
 
 Clock.prototype.drawSegmentBreaks = function() {
-    // break concentric circles into 24 segments
-    for (var h = 0; h < 24; h++) {
-//        console.log("draw hour marker " + h);
-        this.drawSpoke(h / 24.0, this.bgColor);
+    // break concentric circles into 24 segments, using arc stroke for both sides of each hour
+    for (var h = 0; h < 24; h+=2) {
+//      console.log("draw hour marker " + h);
+      this.addChild(this.arcShapeOutline({radius: this.maxRadius, start: h/24.0, end: (h+1)/24.0, color: this.bgColor}, 1.5));
     }
-
-    // TODO make arcs thinner or use straight lines. minimum appears to be 0.0036.
-
-//    this.addChild(this.arcShape({radius: this.maxRadius, start: 0, end: 0.0036, color: "red", xalpha: 0.5}));
-};
-
-Clock.prototype.drawSpoke = function(position, color) {
-    this.addChild(this.arcShape({radius: this.maxRadius, start: position - 0.0018, end: position + 0.0018, color: color, xalpha: 0.5}));
 };
 
 Clock.prototype.drawTimePassedShadow = function(time) {
@@ -343,3 +334,4 @@ Clock.prototype.showTime = function(time) {
     this.drawTimePassedShadow(time);
     this.drawTimeAndDate(time);
 };
+
