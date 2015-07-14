@@ -22,6 +22,30 @@ ActivitiesLogic.prototype.forWeekDay = function(day) {
     return dayActivities;
 };
 
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+ActivitiesLogic.prototype.random = function(count) {
+  var dayActivities = [];
+
+  for (var a=0; a < count; a++) {
+    var act = {id:a, color: "hsl(" + getRandomIntInclusive(0, 360) + ", 100%, 50%)"};
+
+    var start = { hour: getRandomIntInclusive(0, 22), minute: getRandomIntInclusive(0, 5) * 10 };
+    var end = { hour: getRandomIntInclusive(start.hour, 23), minute: getRandomIntInclusive(0, 5) * 10 };
+
+    act.start = moment(start);
+    act.end = moment(end);
+
+    dayActivities.push(act);
+    console.log(act);
+  }
+  return dayActivities;
+};
+
 // TODO fix this
 ActivitiesLogic.prototype.todayActivities = function() {
     var today = [];

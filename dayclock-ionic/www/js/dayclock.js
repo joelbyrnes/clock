@@ -191,11 +191,6 @@ Clock.prototype.setActivitiesLogic = function(activitiesObj) {
 };
 
 Clock.prototype.defragmentLayers = function(activities) {
-//  console.log(activities);
-
-  // TODO algorithm: sort by longest to shortest, place them in time order.
-  // TODO then go through remaining and find ones that can fit into gaps.
-
   var sectors = [];
 
   for (var i=0; i < activities.length; i++) {
@@ -209,6 +204,7 @@ Clock.prototype.defragmentLayers = function(activities) {
 
   while (sectors.length) {
 //    console.log("defragmenting layer ", layers.length);
+//    console.log(sectors.length + " sectors left", sectors);
 
     var layer = [];
 
@@ -216,7 +212,7 @@ Clock.prototype.defragmentLayers = function(activities) {
     var subsequent = sectors.slice();
 
     while (subsequent.length) {
-      var next = subsequent[0];
+      var next = subsequent.shift();
       layer.push(next);
       // remove from sectors
       sectors.splice(sectors.indexOf(next), 1);
@@ -225,7 +221,11 @@ Clock.prototype.defragmentLayers = function(activities) {
       subsequent.sort(function(a, b) { return (b.end - b.start) - (a.end - a.start) });
     }
 
-    // try to find small time blocks that can fit in gaps
+    layers.push(layer);
+
+    // try to find small time blocks that can fit in gaps - TODO should also look at gap to midnight
+
+    if (layer.length < 2) continue;
 
     var gaps = layer.length - 1;
     for (var g=0; g < gaps; g++) {
@@ -239,11 +239,9 @@ Clock.prototype.defragmentLayers = function(activities) {
         });
       }
     }
-
-    layers.push(layer);
   }
 
-//  console.log(layers);
+  console.log(layers);
 
   return layers;
 };
@@ -338,6 +336,7 @@ Clock.prototype.showTime = function(time) {
     this.midnight = moment(time).startOf('day');
     this.removeAllChildren();
     this.drawTimePeriods(this.activities.forWeekDay(time));
+//    this.drawTimePeriods(this.activities.random(30));
     this.drawTimePassedShadow(time);
     this.drawTimeAndDate(time);
 };
