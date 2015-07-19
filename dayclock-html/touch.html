@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>Touch test</title>
+    <!--<script src="https://code.createjs.com/createjs-2015.05.21.min.js"></script>-->
+    <script src="static/createjs-2015.05.21.min.js"></script>
+    <script src="static/dayclock.js"></script>
+    <style>
+        body {
+            #background: #000000;
+        }
+    </style>
+    <script>
+    	var canvas, stage;
+        var update = true;
+
+        function init() {
+            canvas = document.getElementById("demoCanvas");
+            stage = new createjs.Stage(canvas);
+
+            // enable touch interactions if supported on the current device:
+            createjs.Touch.enable(stage);
+
+            // enabled mouse over / out events
+//            stage.enableMouseOver(10);
+
+            // container needed for events?
+            var container = stage.addChild(new createjs.Container()).set({name: "container"});
+
+            var rect = new createjs.Shape();
+            rect.graphics.beginFill("blue").rect(10, 10, 110, 110);
+            //stage.addChild(rect);
+            rect.name = "rectangle";
+
+            var selected = false;
+
+            rect.addEventListener("click", function (evt) {
+                console.log("click ", evt, evt.target.name);
+                var target = evt.target;
+
+                if (!selected) {
+                    target.graphics.clear().beginFill("green").rect(10, 10, 110, 110).endFill();
+                } else {
+                    target.graphics.clear().beginFill("blue").rect(10, 10, 110, 110).endFill();
+                }
+                selected = !selected;
+
+                stage.update();
+            });
+
+            container.addChild(rect);
+
+            container.addEventListener("click", function (evt) {
+                console.log("container click ", evt, evt.target.name);
+                var target = evt.target;
+            });
+
+            createjs.Ticker.addEventListener("tick", tick); // update if there's activity
+
+            //stage.update();
+        }
+
+        function tick(event) {
+            // this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+            if (update) {
+                update = false; // only update once
+                stage.update(event);
+                console.log("updating");
+            }
+        }
+    </script>
+</head>
+<body onload="init();">
+<canvas id="demoCanvas" width="400" height="400"></canvas>
+</body>
+</html>
